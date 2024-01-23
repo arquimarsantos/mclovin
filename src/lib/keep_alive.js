@@ -1,6 +1,8 @@
-var http = require('http');
+//var http = require('http');
 require("fix-esm").register();
+/*
 http.createServer(function (req, res) {
 res.write("Funcionando!");
 res.end();
-}).listen(3306);
+}).listen(8000);
+*/
