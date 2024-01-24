@@ -1,12 +1,12 @@
 //var http = require('http');
 require("fix-esm").register();
-/*
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 4000;
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
 res.send('online!')
 })
+app.listen(3000)
+/*
 http.createServer(function (req, res) {
 res.write("Funcionando!");
 res.end();
