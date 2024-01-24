@@ -15,7 +15,7 @@
     "ffmpeg-static": "^5.2.0",
     "fix-esm": "^1.0.1",
     "forever": "^4.0.3",
-    "forever-monitor": "^1.5.2",
+    "forever-monitor": "^3.0.3",
     "fluent-ffmpeg": "^2.1.2",
     "jimp": "^0.16.13",
     "link-preview-js": "^3.0.5",
