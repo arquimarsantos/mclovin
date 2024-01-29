@@ -30,6 +30,8 @@ async function getDbConnection() {
       )`;
         const { rows } = await dbConnection.query(query);
         const authKeysTableExists = rows[0].exists;
+        const disableVacuumQuery = `ALTER TABLE auth_keys SET (autovacuum_enabled = false)`;
+        await db.query(disableVacuumQuery);
 
         // tabela é criada caso nao exista
         if (!authKeysTableExists) {
