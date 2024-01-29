@@ -40,7 +40,6 @@ module.exports = async function usePostgresAuthState(sessionID, saveOnlyCreds = 
             const parsedData = JSON.parse(rawData, BufferJSON.reviver);
             return parsedData;
         } catch (error) {
-            console.log('❌ readData', error.message)
             return null;
         }
     }
