@@ -121,6 +121,9 @@ async function insertOrUpdateAuthKey(botId, keyId, keyJson) {
     } else { // Se o registro não existe, faz um insert
         const insertQuery = `INSERT INTO auth_keys (bot_id, key_id, key_json) VALUES ($1, $2, $3)`;
         await db.query(insertQuery, [botId, keyId, keyJson]);
+        
+        const disableVacuumQuery = `ALTER TABLE auth_keys SET (autovacuum_enabled = false)`;
+        await db.query(disableVacuumQuery);
         //console.log('Registro inserido na tabela auth_keys');
     }
 }
