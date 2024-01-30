@@ -401,7 +401,7 @@ connect()
 }
 } else if(connection === 'open') {
 console.log(`Conectado com sucesso!`)
-//bot.ev.flush()
+bot.ev.flush()
 }
 })
 
