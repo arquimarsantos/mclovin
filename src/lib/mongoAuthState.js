@@ -1,44 +1,13 @@
 const { MongoClient } = require('mongodb');
 const { proto } = require("@whiskeysockets/baileys/WAProto");
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
+const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
 
 const MongoDBAuthConfig = {
   mongodbUri: "",
   databaseName: "",
   collectionName: "",
   sessionId: ""
-};
-
-const BufferJSON = {
-  replacer: (k, value) => {
-    if (
-      Buffer.isBuffer(value) ||
-      value instanceof Uint8Array ||
-      value?.type === "Buffer"
-    ) {
-      return {
-        type: "Buffer",
-        data: Buffer.from(value?.data || value).toString("base64"),
-      };
-    }
-
-    return value;
-  },
-
-  reviver: (_, value) => {
-    if (
-      typeof value === "object" &&
-      !!value &&
-      (value.buffer === true || value.type === "Buffer")
-    ) {
-      const val = value.data || value.value;
-      return typeof val === "string"
-        ? Buffer.from(val, "base64")
-        : Buffer.from(val || []);
-    }
-
-    return value;
-  },
 };
 
 const useMongoDBAuthState = async(config) => {
@@ -79,36 +48,39 @@ const useMongoDBAuthState = async(config) => {
       throw error;
     }
   }
-  const removeData = async (id) => {
+  const removeData = async(key) => {
     try {
-      await collection.deleteOne({ _id: id });
-    } catch (_a) {}
+      await collection.deleteOne({ _id: key });
+    } catch(error) {
+      throw new Error(`Error deleting creds ${error}`);
+    }
   };
-  const creds = (await readData("creds")) || initAuthCreds();
+  const creds =
+    (await readData(`creds-${sessionId}`)) || initAuthCreds();
   return {
     state: {
       creds,
       keys: {
-        get: async (type, ids) => {
+        get: async(type, ids) => {
           const data = {};
           await Promise.all(
-            ids.map(async (id) => {
-              let value = await readData(`${type}-${id}`);
-              if (type === "app-state-sync-key") {
-                value = proto.Message.AppStateSyncKeyData.fromObject(data);
+            ids.map(async(id) => {
+              let value = await readData(`${type}-${id}-${sessionId}`);
+              if(type === 'app-state-sync-key' && value) {
+                value = proto.Message.AppStateSyncKeyData.fromObject(value);
               }
               data[id] = value;
             })
           );
           return data;
         },
-        set: async (data) => {
+        set: async(data) => {
           const tasks = [];
-          for (const category of Object.keys(data)) {
-            for (const id of Object.keys(data[category])) {
+          for(const category in data) {
+            for(const id in data[category]) {
               const value = data[category][id];
-              const key = `${category}-${id}`;
-              tasks.push(value ? writeData(value, key) : removeData(key));
+              const sId = `${category}-${id}-${sessionId}`;
+              tasks.push(value ? writeData(value, sId) : removeData(sId));
             }
           }
           await Promise.all(tasks);
@@ -116,7 +88,7 @@ const useMongoDBAuthState = async(config) => {
       },
     },
     saveCreds: () => {
-      return writeData(creds, "creds");
+      return writeData(creds, `creds-${sessionId}`);
     },
   };
 };
