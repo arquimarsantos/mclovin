@@ -122,5 +122,3 @@ const useMongoDBAuthState = async(config) => {
 };
 
 module.exports = { useMongoDBAuthState };
-
-
