@@ -363,7 +363,7 @@ sessionId: 'client-01'
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const cfonts = require('cfonts')
 const bot = makeWASocket( {
-logger: P({ level: "silent" }),
+//logger: P({ level: "silent" }),
 usePairingCode,
 mobile: methodMobile,
 browser: ["Ubuntu", "Chrome", "20.0.04"],
@@ -373,7 +373,7 @@ keys: makeCacheableSignalKeyStore(state.keys, logger),
 },
 version,
 defaultQueryTimeoutMs: undefined,
-logger: logger,
+//logger: logger,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
 getMessage: (key) => {
