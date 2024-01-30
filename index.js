@@ -365,7 +365,7 @@ const cfonts = require('cfonts')
 const bot = makeWASocket( {
 //logger: P({ level: "silent" }),
 usePairingCode,
-mobile: methodMobile,
+mobile: false,
 browser: ["Ubuntu", "Chrome", "20.0.04"],
 auth: {
 creds: state.creds,
