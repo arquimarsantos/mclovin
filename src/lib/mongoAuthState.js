@@ -1,18 +1,68 @@
 const { MongoClient } = require('mongodb');
 const { proto } = require("@whiskeysockets/baileys/WAProto");
 const {
-  AuthenticationCreds,
-  AuthenticationState,
-  SignalDataTypeMap,
-} = require('@whiskeysockets/baileys/lib/Types')
-const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
-const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
+  Curve,
+  signedKeyPair,
+} = require("@whiskeysockets/baileys/lib/Utils/crypto");
+const {
+  generateRegistrationId,
+} = require("@whiskeysockets/baileys/lib/Utils/generics");
+const { randomBytes } = require("crypto");
 
 const MongoDBAuthConfig = {
   mongodbUri: "",
   databaseName: "",
   collectionName: "",
   sessionId: ""
+};
+
+const initAuthCreds = () => {
+  const identityKey = Curve.generateKeyPair();
+  return {
+    noiseKey: Curve.generateKeyPair(),
+    signedIdentityKey: identityKey,
+    signedPreKey: signedKeyPair(identityKey, 1),
+    registrationId: generateRegistrationId(),
+    advSecretKey: randomBytes(32).toString("base64"),
+    processedHistoryMessages: [],
+    nextPreKeyId: 1,
+    firstUnuploadedPreKeyId: 1,
+    accountSettings: {
+      unarchiveChats: false,
+    },
+  };
+};
+
+const BufferJSON = {
+  replacer: (k, value) => {
+    if (
+      Buffer.isBuffer(value) ||
+      value instanceof Uint8Array ||
+      value?.type === "Buffer"
+    ) {
+      return {
+        type: "Buffer",
+        data: Buffer.from(value?.data || value).toString("base64"),
+      };
+    }
+
+    return value;
+  },
+
+  reviver: (_, value) => {
+    if (
+      typeof value === "object" &&
+      !!value &&
+      (value.buffer === true || value.type === "Buffer")
+    ) {
+      const val = value.data || value.value;
+      return typeof val === "string"
+        ? Buffer.from(val, "base64")
+        : Buffer.from(val || []);
+    }
+
+    return value;
+  },
 };
 
 const useMongoDBAuthState = async(config) => {
