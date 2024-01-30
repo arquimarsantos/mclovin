@@ -345,6 +345,13 @@ const listanegra = JSON.parse(fs.readFileSync('./src/listanegra.json'))
 const noticias = JSON.parse(fs.readFileSync('./src/noticias.json'))
 var stickersearchactived = false
 var imgsearchactived = false
+var instagramdlactived = false
+var igstoryactived = false
+var pinterestactived = false
+var scbuscaractived = false
+var randompfpactived = false
+var randomaestheticactived = false
+var randomanimeactived = false
 const rsuperemojis = ['✔', '☑', '🧡', '💜', '💚', '❤', '💞', '💟', '🌙', '🆗', '🆙', '✅', '💙', '💗', '💋', '☪', '💕', '💖', '🤍', '❣']
 
 async function connect() {
@@ -371,9 +378,7 @@ auth: {
 creds: state.creds,
 keys: makeCacheableSignalKeyStore(state.keys, logger),
 },
-version,
 defaultQueryTimeoutMs: undefined,
-//logger: logger,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
 getMessage: (key) => {
@@ -401,7 +406,7 @@ connect()
 }
 } else if(connection === 'open') {
 console.log(`Conectado com sucesso!`)
-bot.ev.flush()
+//bot.ev.flush()
 }
 })
 
@@ -795,6 +800,8 @@ return new Promise(resolve => setTimeout(resolve, ms));
 }
 let api = await fetch(`https://api.lolhuman.xyz/api/instagram?apikey=GataDios&url=${encodeURI(args[0])}`)
 let x = await api.json()
+if (instagramdlactived == false) {
+instagramdlactived = true
 var postcount = 0
 for (let i = 0; i < Math.min(x.result.length); i++) {
 await sleepiglink(3000)
@@ -808,9 +815,14 @@ await bot.sendMessage(from, { video: { url: x.result[i] }}, { quoted: info })
 }
 if(postcount == x.result.length) {
 reply(igDownloadPostsBaixadosMensagem())
+instagramdlactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
 }
 } catch (e) {
 reply(apiErroMensagem())
+instagramdlactived = false
 }
 }
 break
@@ -828,7 +840,12 @@ return new Promise(resolve => setTimeout(resolve, ms));
 }
 let api = await fetch(`https://api.zenext.xyz/downloader/instagram/story?apikey=zenzkey_91737a4ecd09&username=${encodeURI(args[0].replace(/^@/, ''))}`)
 let x = await api.json()
-if (x.status == false) return reply(igErroMensagem())
+if (igstoryactived == false) {
+igstoryactived = true
+if (x.status == false) {
+reply(igErroMensagem())
+return igstoryactived = false
+}
 var storycount = 0
 for (let i = 0; i < Math.min(x.result.length); i++) {
 await sleepigstory(3000)
@@ -850,9 +867,14 @@ mentions: [sender]})
 }
 if(storycount == x.result.length) {
 reply(igStoryBaixadosMensagem())
+igstoryactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
 }
 } catch (e) {
 reply(apiErroMensagem())
+igstoryactived = false
 }
 }
 break
@@ -868,6 +890,8 @@ const sleeppinterest = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
 let apiurl = await fetch(`https://api.zenext.xyz/searching/pinterest2?query=${encodeURI(texto)}&apikey=zenzkey_91737a4ecd09`)
+if (pinterestactived == false) {
+pinterestactived = true
 var pinterestcount = 0
 const buscalimite = 5;
 for (let i = 0; i < Math.min(buscalimite); i++) {
@@ -875,8 +899,15 @@ await sleeppinterest(3000)
 pinterestcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
+if(pinterestcount == buscalimite) {
+pinterestactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
 } catch (e) {
 reply(pinterestErroMensagem())
+pinterestactived = false
 }
 }
 break
@@ -942,7 +973,12 @@ return new Promise(resolve => setTimeout(resolve, ms));
 }
 let api = await fetch(`https://api.zenext.xyz/downloader/soundcloud/search?apikey=zenzkey_91737a4ecd09&query=${encodeURI(texto)}`)
 let x = await api.json()
-if (x.status == false) return reply(scBuscarErroMensagem())
+if (scbuscaractived == false) {
+scbuscaractived = true
+if (x.status == false) {
+reply(scBuscarErroMensagem())
+return scbuscaractived = false
+}
 var buscascount = 0
 const buscalimite = 10;
 for (let i = 0; i < Math.min(buscalimite, x.result.length); i++) {
@@ -954,9 +990,14 @@ caption: `Título: ${x.result[i].title}\nArtista: ${x.result[i].artist}\nViews: 
 }
 if(buscascount == x.result.length) {
 reply(scBuscarMscsEncontradasMensagem())
+scbuscaractived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
 }
 } catch (e) {
 reply(apiErroMensagem())
+scbuscaractived = false
 }
 }
 break
@@ -1076,6 +1117,8 @@ const sleeprprofile = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
 let apiurl = await fetch(`https://api.zenext.xyz/randomimage/profil?apikey=zenzkey_91737a4ecd09`)
+if (randompfpactived == false) {
+randompfpactived = true
 var randompfpcount = 0
 const buscalimite = 5;
 for (let i = 0; i < Math.min(buscalimite); i++) {
@@ -1083,8 +1126,15 @@ await sleeprprofile(3000)
 randompfpcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
+if(randompfpcount == buscalimite) {
+randompfpactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
 } catch (e) {
 reply(apiErroMensagem())
+randompfpactived = false
 }
 }
 break
@@ -1097,6 +1147,8 @@ const sleepaesthetic = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
 let apiurl = await fetch(`https://api.zenext.xyz/randomimage/aesthetic?apikey=zenzkey_91737a4ecd09`)
+if (randomaestheticactived == false) {
+randomaestheticactived = true
 var randomaestheticcount = 0
 const buscalimite = 5;
 for (let i = 0; i < Math.min(buscalimite); i++) {
@@ -1104,8 +1156,15 @@ await sleepaesthetic(3000)
 randomaestheticcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
+if(randomaestheticcount == buscalimite) {
+randomaestheticactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
 } catch (e) {
 reply(apiErroMensagem())
+randomaestheticactived = false
 }
 }
 break
@@ -1118,6 +1177,8 @@ const sleepanime = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
 let apiurl = await fetch('https://api.zenext.xyz/randomanime/anime?apikey=zenzkey_91737a4ecd09')
+if (randomanimeactived == false) {
+randomanimeactived = true
 var randomanimecount = 0
 const buscalimite = 5;
 for (let i = 0; i < Math.min(buscalimite); i++) {
@@ -1125,8 +1186,15 @@ await sleepanime(3000)
 randomanimecount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
+if(randomanimecount == buscalimite) {
+randomanimeactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
 } catch (e) {
 reply(apiErroMensagem())
+randomanimeactived = false
 }
 }
 break
