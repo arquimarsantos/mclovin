@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const { proto } = require("@whiskeysockets/baileys/WAProto");
-const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
+const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
 
 const MongoDBAuthConfig = {
   mongodbUri: "",
@@ -27,17 +27,23 @@ const useMongoDBAuthState = async(config) => {
     }
   };
   await ensureCollectionExists();
+  
   async function writeData(data, key) {
     try {
-      return await collection.replaceOne(
-        { _id: key },
-        JSON.parse(JSON.stringify(data, BufferJSON.replacer)),
-        { upsert: true }
-      );
-    } catch(error) {
+    const informationToStore = JSON.parse(
+      JSON.stringify(data, BufferJSON.replacer)
+    );
+    const update = {
+      $set: {
+        ...informationToStore,
+      },
+    };
+    return collection.updateOne({ _id: key }, update, { upsert: true });
+     } catch(error) {
       console.error(error);
     }
-  }
+  };
+  
   async function readData(key) {
     try {
       const data = await collection.findOne({ _id: key });
