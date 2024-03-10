@@ -1,4 +1,3 @@
-//
 const { downloadContentFromMessage, downloadMediaMessage } = require('@whiskeysockets/baileys')
 const addStickerMetaData = require("./addStickerMetaData.js")
 const { writeFile } = require('fs/promises')
@@ -1806,6 +1805,11 @@ function linkTikTokInvalidoErroMensagem()
 return '[❗] Esto no es un link de tiktok.'
 }
 
+function linkNaoPermitidoErroMensagem()
+{
+return '[❗] Link no es permitido para esta acción.'
+}
+
 function tiktokDownloadErroMensagem()
 {
 return '[❗] El vídeo no fue encontrado, talvez no exista or fue ingresado incorrectamente.'
@@ -2878,6 +2882,7 @@ afxErroMensagem,
 funcEmUsoErroMensagem,
 tiktokDownloadArgsMensagem,
 linkTikTokInvalidoErroMensagem,
+linkNaoPermitidoErroMensagem,
 tiktokDownloadErroMensagem,
 botErroMensagem,
 addListaNegraMensagem,
