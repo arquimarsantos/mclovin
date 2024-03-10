@@ -289,6 +289,7 @@ afxErroMensagem,
 funcEmUsoErroMensagem,
 tiktokDownloadArgsMensagem,
 linkTikTokInvalidoErroMensagem,
+linkNaoPermitidoErroMensagem,
 tiktokDownloadErroMensagem,
 botErroMensagem,
 addListaNegraMensagem,
@@ -3694,6 +3695,7 @@ case 'play': case 'song': case 'cancion': case 'musica': case 'msc': {
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(musicaErroMensagem(prefix, cmd))
+if (isUrl(texto)) return reply(linkNaoPermitidoErroMensagem())
 const emojis = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🔉', '✨', '🎧']
 const randomemojismsg = emojis[Math.floor(Math.random() * emojis.length)]
 const msgs = [enviandoMusicaMensagem1(), enviandoMusicaMensagem2(), enviandoMusicaMensagem3(), enviandoMusicaMensagem4(), enviandoMusicaMensagem5()]
@@ -3993,7 +3995,7 @@ case 'chatgpt': case 'gpt':{
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(chatGPTErroMensagem())
-const apiUrl1 = `https://vihangayt.me/tools/chatgpt?q=${encodeURIComponent(q)}`
+const apiUrl1 = `https://api.vihangayt.asia/ai/chatgpt?q=${encodeURIComponent(q)}`
 const apiUrl2 = `https://gurugpt.cyclic.app/gpt4?prompt=${encodeURIComponent(q)}&model=llama`        
 try {   
 const response1 = await fetch(apiUrl1)
