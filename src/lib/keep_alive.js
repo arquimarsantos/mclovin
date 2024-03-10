@@ -1,8 +1,8 @@
-const https = require('https');
+// const https = require('https');
 const express = require('express')
 const app = express()
-const { ProxyAgent } = require('proxy-agent')
-const agent = new ProxyAgent()
+// const { ProxyAgent } = require('proxy-agent')
+// const agent = new ProxyAgent()
 require("fix-esm").register();
 /*
 var proxies = [
@@ -27,12 +27,10 @@ var proxies = [
 'http://138.121.161.86:8190'
 ]
 const randomproxies = proxies[Math.floor(Math.random() * proxies.length)]
-*/
 https.get('https://186.215.87.194:30005', { agent }, (res) => {
 console.log(res.statusCode, res.headers);
 res.pipe(process.stdout);
 });
-/*
 setInterval( () => {
 var proxies2 = [
 'http://205.164.84.250:8591',
