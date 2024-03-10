@@ -61,31 +61,32 @@ const useMongoDBAuthState = async(config) => {
       throw new Error(`Error deleting creds ${error}`);
     }
   };
-  const creds = (await readData("creds")) || (0, initAuthCreds)();
+  const creds =
+    (await readData(`creds-${sessionId}`)) || initAuthCreds();
   return {
     state: {
       creds,
       keys: {
-        get: async (type, ids) => {
+        get: async(type, ids) => {
           const data = {};
           await Promise.all(
-            ids.map(async (id) => {
-              let value = await readData(`${type}-${id}`);
-              if (type === "app-state-sync-key") {
-                value = proto.Message.AppStateSyncKeyData.fromObject(data);
+            ids.map(async(id) => {
+              let value = await readData(`${type}-${id}-${sessionId}`);
+              if(type === 'app-state-sync-key' && value) {
+                value = proto.Message.AppStateSyncKeyData.fromObject(value);
               }
               data[id] = value;
             })
           );
           return data;
         },
-        set: async (data) => {
+        set: async(data) => {
           const tasks = [];
-          for (const category of Object.keys(data)) {
-            for (const id of Object.keys(data[category])) {
+          for(const category in data) {
+            for(const id in data[category]) {
               const value = data[category][id];
-              const key = `${category}-${id}`;
-              tasks.push(value ? writeData(value, key) : removeData(key));
+              const sId = `${category}-${id}-${sessionId}`;
+              tasks.push(value ? writeData(value, sId) : removeData(sId));
             }
           }
           await Promise.all(tasks);
@@ -93,7 +94,7 @@ const useMongoDBAuthState = async(config) => {
       },
     },
     saveCreds: () => {
-      return writeData(creds, "creds");
+      return writeData(creds, `creds-${sessionId}`);
     },
   };
 };
