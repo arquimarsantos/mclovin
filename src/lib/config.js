@@ -8,9 +8,9 @@ const ff = require('fluent-ffmpeg')
 const path = require('path')
 const fs = require('fs')
 const prefix = "!"
-const nomedono = "ᥲrqᥙιjᥱt᥉kι. 🌙"
-const contatodono = "wa.me/4915510203160"
-const numerodono = ["4915510203160"]
+const nomedono = "arquimar 🌙"
+const contatodono = "wa.me/557197108211"
+const numerodono = ["557197108211"]
 const nomebot = "☪ 𝙼𝚌𝙻𝚘𝚟𝚒𝚗 - 𝙱𝚘𝚝 シ ☪"
 const menuimagem1 = "./src/media/menu1.jpeg"
 const menuimagem2 = "./src/media/menu2.jpg"
@@ -30,7 +30,7 @@ const audiotempfolder = path.resolve('./src/audios')
 function createStickerMetaData(pushName) {
 return {
 packname: `彡 💌 𝙲𝚛𝚎𝚊𝚍𝚘 𝚙𝚘𝚛:\n↳ ${nomebot}`,
-author: `彡 🧛🏻‍♂️ ᥲrqᥙιjᥱt᥉kι 🌙\n\n彡 👤 ${pushName}`
+author: `彡 👤 ${pushName}`
 };
 }
 
@@ -43,7 +43,7 @@ return `
 
 ╭━━『🧛🏻‍♂️』ℂℝ𝔼𝔸𝔻𝕆ℝ『🧛🏻‍♂️』
 │❒ Dueño : ${nomedono}
-│❒ Contacto : ${contatodono}
+│❒ Contacto TG: @arqui_szz
 ╰━━『🇧🇷』ℂℝ𝔼𝔸𝔻𝕆ℝ『🇧🇷』
 
 ╭━━ 『🐞』𝑴𝑰𝑬𝑴𝑩𝑹𝑶𝑺『🍄』
