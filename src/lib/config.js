@@ -56,7 +56,6 @@ return `
 ┝ _➛${prefix}soundcloud || ${prefix}sc *<link>*
 ┝ _➛${prefix}soundcloudbuscar || ${prefix}scbuscar *<texto>*
 ┝ _➛${prefix}stickerbuscar || ${prefix}sbuscar *<texto>*
-┝ _➛${prefix}imgbuscar *<texto>*
 ┝ _➛${prefix}randomprofile || ${prefix}randompfp
 ┝ _➛${prefix}aesthetic
 ┝ _➛${prefix}randomanime || ${prefix}anime
@@ -77,7 +76,6 @@ return `
 ┝ _➛${prefix}toimg || ${prefix}toimage
 ┝ _➛${prefix}togif
 ┝ _➛${prefix}todoc
-┝ _➛${prefix}toanime
 ┝ _➛${prefix}ytmp3 || ${prefix}ytaudio *<link>*
 ┝ _➛${prefix}ytmp4 || ${prefix}ytvideo *<link>*
 ┝ _➛${prefix}ytdoc *<link>*
@@ -122,6 +120,17 @@ return `
 ╰━
 `
 }
+
+/*
+
+┝ _➛${prefix}stickerbuscar || ${prefix}sbuscar *<texto>*
+┝ _➛${prefix}imgbuscar *<texto>*
+
+
+┝ _➛${prefix}todoc
+┝ _➛${prefix}toanime
+
+*/
 
 function grupoErroMensagem()
 {
@@ -1767,7 +1776,7 @@ return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
 
 function gfxArgsMensagem()
 {
-return `[🧙🏼‍♂️] Elija un efecto de la lista...\n \n➳ affect\n➳ beautiful\n➳ blur\n➳ brightness *<cantidad>*\n➳ burn *<cantidad>*\n➳ circle\n➳ clyde *<mensaje>* *<nombre>*\n➳ darkness *<cantidad>*\n➳ delete\n➳ facepalm\n➳ greyscale\n➳ hitler\n➳ invert\n➳ jail\n➳ jokeoverhead\n➳ phub *<mensaje>* *<nombre>*\n➳ pixelate *<cantidad>*\n➳ quote *<mensaje>* *<nombre>*\n➳ rainbow\n➳ resize *<altura>* *<anchura>*\n➳ rip\n➳ sepia\n➳ sharpen *<cantidad>*\n➳ shit\n➳ trash\n➳ trigger\n➳ wanted\n➳ wasted\n \n࿓ Despues etiqueta una imagen, ejemplo: ${prefix}gfx sharpen 5`
+return `[🧙🏼‍♂️] Elija un efecto de la lista...\n \n➳ blur\n➳ brighten\n➳ circle\n➳ comrade\n➳ contrast\n➳ gay\n➳ glass\n➳ greyscale\n➳ horny\n➳ invert\n➳ jail\n➳ passed\n➳ photomania\n➳ pixelate\n➳ scale\n➳ sepia\n \n࿓ Despues etiqueta una imagen, ejemplo: ${prefix}gfx invert 5`
 }
 
 function gfxErroMensagem(efecto)
