@@ -9,7 +9,6 @@
 const { default: makeWASocket, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
-const ip = require('ip')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
 const methodMobile = process.argv.includes("mobile")
@@ -1020,24 +1019,28 @@ try {
 const sleepstksearch = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
-let api = await fetch(`https://api-smd.vercel.app/api/stickersearch?query=${encodeURI(texto)}`)
+let api = await fetch(`https://api.ouzen.xyz/searching/stickersearch?query=${encodeURI(texto)}&apikey=zenzkey_91737a4ecd09`)
 let x = await api.json()
 if (stickersearchactived == false) {
 stickersearchactived = true
+if (x.status == false) {
+reply(stickerBuscarErroMensagem())
+return stickersearchactived = false
+}
 var buscascount = 0
 const emojis = ['✅', '🧩', '🆗']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
 bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
-for (let i = 0; i < Math.min(x.sticker_url.length); i++) {
+for (let i = 0; i < Math.min(x.result.length); i++) {
 const sleep = [3000, 5000, 7000]
 const randomsleep = sleep[Math.floor(Math.random() * sleep.length)]
 await sleepstksearch(randomsleep)
 buscascount++
-let buff = Buffer.isBuffer(x.sticker_url[i]) ? x.sticker_url[i] : /^data:.*?\/.*?;base64,/i.test(x.sticker_url[i]) ? Buffer.from(x.sticker_url[i].split`,`[1], 'base64') : /^https?:\/\//.test(x.sticker_url[i]) ? await (await fetchBuffer(x.sticker_url[i])) : fs.existsSync(x.sticker_url[i]) ? fs.readFileSync(x.sticker_url[i]) : Buffer.alloc(0)
+let buff = Buffer.isBuffer(x.result[i]) ? x.result[i] : /^data:.*?\/.*?;base64,/i.test(x.result[i]) ? Buffer.from(x.result[i].split`,`[1], 'base64') : /^https?:\/\//.test(x.result[i]) ? await (await fetchBuffer(x.result[i])) : fs.existsSync(x.result[i]) ? fs.readFileSync(x.result[i]) : Buffer.alloc(0)
 let tmpFileIn = ''
-if (x.sticker_url[i].includes(".png")) {
+if (x.result[i].includes(".png")) {
 tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.png`)
-} else if (x.sticker_url[i].includes(".gif")) {
+} else if (x.result[i].includes(".gif")) {
 tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.gif`)
 }
 const tmpFileOut = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.webp`)
@@ -1065,7 +1068,7 @@ throw new Error(error)
 }
 })
 }
-if(buscascount == x.sticker_url.length) {
+if(buscascount == x.result.length) {
 setTimeout( () => {
 reply(stickerBuscarEnviadosMensagem(buscascount))
 }, 8000)
@@ -1080,6 +1083,7 @@ stickersearchactived = false
 }
 }
 break
+/*
 case 'imgbuscar':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -1119,6 +1123,7 @@ imgsearchactived = false
 }
 }
 break
+*/
 case 'randomprofile': case 'randompfp':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -2686,138 +2691,107 @@ if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(gfxArgsMensagem())
 if (!isQuotedImage) return reply(imagemErroMensagem())
-if (args[0] != 'burn' && args[0] != 'sharpen' && args[0] != 'brightness' && args[0] != 'darkness' && args[0] != 'pixelate' && args[0] != 'resize' && args[0] != 'shit' && args[0] != 'delete' && args[0] != 'jail' && args[0] != 'jokeoverhead' && args[0] != 'hitler' && args[0] != 'trash' && args[0] != 'rip' && args[0] != 'greyscale' && args[0] != 'sepia' && args[0] != 'wasted' && args[0] != 'wanted' && args[0] != 'trigger' && args[0] != 'rainbow' && args[0] != 'invert' && args[0] != 'facepalm' && args[0] != 'blur' && args[0] != 'beautiful' && args[0] != 'circle' && args[0] != 'affect' && args[0] != 'phub' && args[0] != 'quote' && args[0] != 'clyde') return reply(gfxErroMensagem(args[0]))
+if (args[0] != 'blur' && args[0] != 'brighten' && args[0] != 'circle' && args[0] != 'comrade' && args[0] != 'contrast' && args[0] != 'gay' && args[0] != 'glass' && args[0] != 'greyscale' && args[0] != 'horny' && args[0] != 'invert' && args[0] != 'jail' && args[0] != 'passed' && args[0] != 'photomania' && args[0] != 'pixelate' && args[0] != 'scale' && args[0] != 'sepia') return reply(gfxErroMensagem(args[0]))
 const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const image = await UploadFileUgu(img)
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
-if (args[0] == 'burn') {
+if (args[0] == 'blur') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/burn?amount=${encodeURIComponent(args[1])}&url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/blur?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'sharpen') {
+} else if (args[0] == 'brighten') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/sharpen?amount=${encodeURIComponent(args[1])}&url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/brighten?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'brightness') {
+} else if (args[0] == 'circle') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/brightness?amount=${encodeURIComponent(args[1])}&url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/circle?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'darkness') {
+} else if (args[0] == 'comrade') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/darkness?amount=${encodeURIComponent(args[1])}&url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/comrade?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'contrast') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/contrast?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'gay') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/gay?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'glass') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/glass?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'greyscale') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/greyscale?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'horny') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/horny?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'invert') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/invert?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'jail') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/jail?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'passed') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/passed?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} else if (args[0] == 'photomania') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+let api = await fetch(`https://api.ouzen.xyz/photoeditor/photomanipulation?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+let x = await api.json()
+await bot.sendMessage(from, { image: x.result.url }, {quoted: info})
 } else if (args[0] == 'pixelate') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/pixelate?amount=${encodeURIComponent(args[1])}&url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/pixelate?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'resize') {
-if (!args[1] || !args[2]) return reply(comandos2GfxErroMensagem(prefix, cmd, args[0]))
-if (args[3]) return reply(comandos2GfxErroMensagem(prefix, cmd, args[0]))
-if (isNaN(args[1]) || isNaN(args[2])) return reply(apenasNumerosErroMensagem())
+} else if (args[0] == 'scale') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/resize?height=${encodeURIComponent(args[1])}&width=${encodeURIComponent(args[2])}&url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'shit') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/shit?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'delete') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/delete?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'jail') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/jail?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'jokeoverhead') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/jokeOverHead?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'hitler') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/hitler?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'trash') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/trash?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'rip') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/rip?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'greyscale') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/greyscale?url=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/2x?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'sepia') {
+if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/sepia?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'wasted') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/wasted?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'wanted') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/wanted?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'trigger') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/trigger?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'rainbow') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/rainbow?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'invert') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/invert?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'facepalm') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/facepalm?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'blur') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/blur?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'beautiful') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/beautiful?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'circle') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/circle?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'affect') {
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/affect?url=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'phub') {
-if (!args[1] || !args[2]) return reply(comandos3GfxErroMensagem(prefix, cmd, args[0]))
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/phub?message=${encodeURIComponent(args[1])}&name=${encodeURIComponent(args[2])}&image=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'quote') {
-if (!args[1] || !args[2]) return reply(comandos3GfxErroMensagem(prefix, cmd, args[0]))
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/quote?message=${encodeURIComponent(args[1])}&name=${encodeURIComponent(args[2])}&image=${encodeURIComponent(util.format(image.url))}`)
-await bot.sendMessage(from, { image: res}, {quoted: info})
-} else if (args[0] == 'clyde') {
-if (!args[1] || !args[2]) return reply(comandos3GfxErroMensagem(prefix, cmd, args[0]))
-bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api-smd.vercel.app/api/maker/clyde?message=${encodeURIComponent(args[1])}&name=${encodeURIComponent(args[2])}&image=${encodeURIComponent(util.format(image.url))}`)
+const res = await fetch(`https://api.ouzen.xyz/photoeditor/sepia?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 }
 } catch (e) {
@@ -2942,6 +2916,7 @@ fs.unlinkSync(path)
 }
 }
 break
+/*
 case 'toanime':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -2983,6 +2958,7 @@ reply(simiErroMensagem())
 }
 }
 break
+*/
 case 'pfp':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
