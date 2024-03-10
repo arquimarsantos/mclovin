@@ -6,7 +6,7 @@
 * Email: arquimarsx@gmail.com
 */
 
-const { default: makeWASocket, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
+const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
@@ -324,6 +324,14 @@ isUrl
 const logger = P({
 level: 50
 })
+const store = makeInMemoryStore({
+logger: P().child({
+level: 'silent',
+stream: 'store'
+})
+})
+store.readFromFile('./data/store.json')
+setInterval(() => {store.writeToFile('./data/store.json')}, 10000)
 const retryCache = new NodeCache({ stdTTL: 30, checkperiod: 20 })
 const sendCache  = new NodeCache({ stdTTL: 30, checkperiod: 20 })
 const rl = readline.createInterface({
@@ -383,11 +391,13 @@ defaultQueryTimeoutMs: undefined,
 markOnlineOnConnect: true,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
-getMessage: (key) => {
-const msg = sendCache.get(`${key.remoteJid}_${key.id}`)
-return msg?.message
+getMessage: async key => {
+const msg = await store.loadMessage(key.remoteJid, key.id)
+return msg.message || undefined
 }
 })
+
+store.bind(bot.ev);
 
 bot.ev.on('creds.update', saveCreds)
 
