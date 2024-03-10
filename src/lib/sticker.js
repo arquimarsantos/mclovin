@@ -6,7 +6,7 @@ const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
 const path = require('path')
 
-ffmpeg.setFfmpegPath(pathToFfmpeg)
+//ffmpeg.setFfmpegPath(pathToFfmpeg)
 
 class Actions{
 
@@ -46,7 +46,7 @@ throw new Error(error)
 }
 const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData(this.pushname))
 const media = fs.readFileSync(mediaWithMetaDataPath)
-await this.bot.sendMessage(this.remoteJid, { sticker: media })
+await this.bot.sendMessage(this.remoteJid, { sticker: media }, { quoted: this.baileysMessage })
 fs.unlinkSync(mediaWithMetaDataPath)
 fs.unlinkSync(inputPath)
 fs.unlinkSync(outputPath)
@@ -84,7 +84,7 @@ return await comprimirSticker(this.bot, this.remoteJid, this.pushname, inputPath
 }
 const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData(this.pushname))
 const media = fs.readFileSync(mediaWithMetaDataPath)
-await this.bot.sendMessage(this.remoteJid, { sticker: media })
+await this.bot.sendMessage(this.remoteJid, { sticker: media }, { quoted: this.baileysMessage })
 fs.unlinkSync(mediaWithMetaDataPath)
 fs.unlinkSync(inputPath)
 fs.unlinkSync(outputPath)
