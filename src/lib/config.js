@@ -1,3 +1,4 @@
+//
 const { downloadContentFromMessage, downloadMediaMessage } = require('@whiskeysockets/baileys')
 const addStickerMetaData = require("./addStickerMetaData.js")
 const { writeFile } = require('fs/promises')
