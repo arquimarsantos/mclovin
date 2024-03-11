@@ -6,8 +6,6 @@
 * Email: arquimarsx@gmail.com
 */
 
-//
-
 const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
@@ -365,6 +363,13 @@ var randomaestheticactived = false
 var randomanimeactived = false
 const rsuperemojis = ['✔', '☑', '🧡', '💜', '💚', '❤', '💞', '💟', '🌙', '🆗', '🆙', '✅', '💙', '💗', '💋', '☪', '💕', '💖', '🤍', '❣']
 
+/*
+auth: {
+creds: state.creds,
+keys: makeCacheableSignalKeyStore(state.keys, logger),
+},
+*/
+
 async function connect() {
 const { error, version } = await fetchLatestBaileysVersion()
 if (error){
@@ -385,10 +390,7 @@ logger: P({ level: "silent" }),
 usePairingCode,
 mobile: methodMobile,
 browser: ["Ubuntu", "Chrome", "20.0.04"],
-auth: {
-creds: state.creds,
-keys: makeCacheableSignalKeyStore(state.keys, logger),
-},
+auth: state,
 defaultQueryTimeoutMs: undefined,
 markOnlineOnConnect: true,
 generateHighQualityLinkPreview: true,
