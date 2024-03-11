@@ -4,8 +4,7 @@ const express = require('express')
 const app = express()
 const { SocksProxyAgent } = require('socks-proxy-agent')
 // const agent = new ProxyAgent()
-162.210.192.136
-const agent = new SocksProxyAgent('socks5://74.119.144.60:4145')
+const agent = new SocksProxyAgent('socks5://162.210.192.136:30334')
 require("fix-esm").register();
 // Proxies aprovados
 // 74.119.144.60:4145
