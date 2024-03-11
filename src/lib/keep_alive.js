@@ -1,5 +1,5 @@
 const https = require('https');
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 const express = require('express')
 const app = express()
 const { SocksProxyAgent } = require('socks-proxy-agent')
