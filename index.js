@@ -6,6 +6,8 @@
 * Email: arquimarsx@gmail.com
 */
 
+//
+
 const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
