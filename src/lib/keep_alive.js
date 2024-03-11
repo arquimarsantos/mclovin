@@ -7,10 +7,8 @@ const { SocksProxyAgent } = require('socks-proxy-agent')
 162.210.192.136
 const agent = new SocksProxyAgent('socks5://74.119.144.60:4145')
 require("fix-esm").register();
-/*
-Proxies aprovados
-74.119.144.60:4145
-*/
+// Proxies aprovados
+// 74.119.144.60:4145
 /*
 var proxies = [
 'http://205.164.84.250:8591',
