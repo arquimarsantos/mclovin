@@ -8,7 +8,7 @@ const util = require('util')
 const fs = require('fs')
 const path = require('path')
 
-//ffmpeg.setFfmpegPath(pathToFfmpeg)
+ffmpeg.setFfmpegPath(pathToFfmpeg)
 
 class Actions{
 
