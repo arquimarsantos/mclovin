@@ -1,10 +1,9 @@
-const https = require('https');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+// const https = require('https');
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 const express = require('express')
 const app = express()
-const { SocksProxyAgent } = require('socks-proxy-agent')
-// const agent = new ProxyAgent()
-const agent = new SocksProxyAgent('socks5://74.119.144.60:4145')
+// const { SocksProxyAgent } = require('socks-proxy-agent')
+// const agent = new SocksProxyAgent('socks5://74.119.144.60:4145')
 require("fix-esm").register();
 // Proxies aprovados
 // 74.119.144.60:4145
@@ -31,7 +30,6 @@ var proxies = [
 'http://138.121.161.86:8190'
 ]
 const randomproxies = proxies[Math.floor(Math.random() * proxies.length)]
-*/
 https.get('https://ipinfo.io', { agent }, (res) => {
 console.log(res.statusCode, res.headers);
 res.pipe(process.stdout);
