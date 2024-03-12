@@ -11,7 +11,6 @@ const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
-const methodMobile = process.argv.includes("mobile")
 const msgRetryCounterCache = new NodeCache()
 const keep_alive = require('./src/lib/keep_alive.js')
 const fs = require("fs")
@@ -362,13 +361,6 @@ var randompfpactived = false
 var randomaestheticactived = false
 var randomanimeactived = false
 const rsuperemojis = ['✔', '☑', '🧡', '💜', '💚', '❤', '💞', '💟', '🌙', '🆗', '🆙', '✅', '💙', '💗', '💋', '☪', '💕', '💖', '🤍', '❣']
-
-/*
-auth: {
-creds: state.creds,
-keys: makeCacheableSignalKeyStore(state.keys, logger),
-},
-*/
 
 async function connect() {
 const { error, version } = await fetchLatestBaileysVersion()
@@ -2710,7 +2702,7 @@ if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(gfxArgsMensagem())
 if (!isQuotedImage) return reply(imagemErroMensagem())
-if (args[0] != 'blur' && args[0] != 'brighten' && args[0] != 'circle' && args[0] != 'comrade' && args[0] != 'contrast' && args[0] != 'gay' && args[0] != 'glass' && args[0] != 'greyscale' && args[0] != 'horny' && args[0] != 'invert' && args[0] != 'jail' && args[0] != 'passed' && args[0] != 'photomania' && args[0] != 'pixelate' && args[0] != 'scale' && args[0] != 'sepia') return reply(gfxErroMensagem(args[0]))
+if (args[0] != 'blur' && args[0] != 'brighten' && args[0] != 'circle' && args[0] != 'comrade' && args[0] != 'contrast' && args[0] != 'gay' && args[0] != 'glass' && args[0] != 'greyscale' && args[0] != 'horny' && args[0] != 'invert' && args[0] != 'jail' && args[0] != 'passed' && args[0] != 'pixelate' && args[0] != 'scale' && args[0] != 'sepia') return reply(gfxErroMensagem(args[0]))
 const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const image = await UploadFileUgu(img)
 try {
@@ -2787,13 +2779,15 @@ if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/passed?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
+/*
 } else if (args[0] == 'photomania') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 let api = await fetch(`https://api.ouzen.xyz/photoeditor/photomanipulation?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 let x = await api.json()
-await bot.sendMessage(from, { image: x.result.url }, {quoted: info})
+await bot.sendMessage(from, { image: { url: x.result.url_secury }}, {quoted: info})
+*/
 } else if (args[0] == 'pixelate') {
 if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
@@ -2815,6 +2809,7 @@ await bot.sendMessage(from, { image: res}, {quoted: info})
 }
 } catch (e) {
 reply(apiErroMensagem())
+console.log(e)
 }
 }
 break
@@ -2887,7 +2882,7 @@ if (texto) return reply(toImgErroMensagem())
 await actions.sticker()
 }
 break
-case 'togif':
+case 'togifey':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!isQuotedSticker) return reply(stickerGifErroMensagem())
