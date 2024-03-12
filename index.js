@@ -388,10 +388,13 @@ const cfonts = require('cfonts')
 const bot = makeWASocket( {
 logger: P({ level: "silent" }),
 usePairingCode,
-mobile: methodMobile,
-browser: ["Ubuntu", "Chrome", "20.0.04"],
-auth: state,
+mobile: false,
+browser: ["Ubuntu", "Chrome", "20.0.04"],,
 defaultQueryTimeoutMs: undefined,
+auth: {
+creds: state.creds,
+keys: makeCacheableSignalKeyStore(state.keys, P({ level: "fatal" }).child({ level: "fatal" })),
+},
 markOnlineOnConnect: true,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
