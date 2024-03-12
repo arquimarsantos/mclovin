@@ -103,7 +103,7 @@ const mp4Buffer = await fetchBuffer(resultado)
 const emojis2 = ['✔', '☑', '🎞']
 const randomemojismsg2 = emojis2[Math.floor(Math.random() * emojis2.length)]
 this.bot.sendMessage(this.remoteJid, { react: { text: randomemojismsg2, key: this.baileysMessage.key }})
-await this.bot.sendMessage(this.remoteJid, { video: { url: mp4Buffer }, gifPlayback: true}, {quoted: this.baileysMessage})
+await this.bot.sendMessage(this.remoteJid, { video: mp4Buffer, gifPlayback: true}, {quoted: this.baileysMessage})
 fs.unlinkSync(inputPath)
 } else if (this.isSticker) {
 const ipath = await downloadSticker(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
