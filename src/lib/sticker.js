@@ -1,8 +1,10 @@
-const { extractDataFromMessage, downloadImage, downloadVideo, downloadSticker, tempfolder, criandoStickerMensagem, videoLongoErroMensagem, getMediaMessageContent, comprimirSticker, createStickerMetaData, fetchBuffer } = require('./config')
+const { extractDataFromMessage, downloadImage, downloadVideo, downloadSticker, tempfolder, criandoStickerMensagem, videoLongoErroMensagem, getMediaMessageContent, comprimirSticker, createStickerMetaData, fetchBuffer, apiErroMensagem } = require('./config')
 const addStickerMetaData = require("./addStickerMetaData.js");
-const webpToMp4 = require("./webpToMp4")
+const fetch = require('node-fetch')
+const { UploadFileUgu } = require("./uploader.js")
 const pathToFfmpeg = require("ffmpeg-static")
 const ffmpeg = require('fluent-ffmpeg')
+const util = require('util')
 const fs = require('fs')
 const path = require('path')
 
@@ -97,13 +99,15 @@ throw new Error(error)
 }
 })
 } else if (mediaMessage.isAnimated) {
-const inputPath = await downloadSticker(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
-const { resultado } = await webpToMp4(inputPath)
-const mp4Buffer = await fetchBuffer(resultado)
+let inputPath = await downloadSticker(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
+const image = await UploadFileUgu(inputPath)
+let api = await fetch(`https://api.ouzen.xyz/convert/webp-to-mp4?url=${encodeURIComponent(util.format(image.url))}&apikey=zenzkey_91737a4ecd09`)
+let x = await api.json()
+if (x.status == false) return reply(apiErroMensagem())
 const emojis2 = ['✔', '☑', '🎞']
 const randomemojismsg2 = emojis2[Math.floor(Math.random() * emojis2.length)]
 this.bot.sendMessage(this.remoteJid, { react: { text: randomemojismsg2, key: this.baileysMessage.key }})
-await this.bot.sendMessage(this.remoteJid, { video: mp4Buffer, gifPlayback: true}, {quoted: this.baileysMessage})
+await this.bot.sendMessage(this.remoteJid, { video: { url: x.result }, gifPlayback: true }, {quoted: this.baileysMessage})
 fs.unlinkSync(inputPath)
 } else if (this.isSticker) {
 const ipath = await downloadSticker(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
