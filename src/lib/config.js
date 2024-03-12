@@ -1776,7 +1776,7 @@ return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
 
 function gfxArgsMensagem()
 {
-return `[🧙🏼‍♂️] Elija un efecto de la lista...\n \n➳ blur\n➳ brighten\n➳ circle\n➳ comrade\n➳ contrast\n➳ gay\n➳ glass\n➳ greyscale\n➳ horny\n➳ invert\n➳ jail\n➳ passed\n➳ photomania\n➳ pixelate\n➳ scale\n➳ sepia\n \n࿓ Despues etiqueta una imagen, ejemplo: ${prefix}gfx invert 5`
+return `[🧙🏼‍♂️] Elija un efecto de la lista...\n \n➳ blur\n➳ brighten\n➳ circle\n➳ comrade\n➳ contrast\n➳ gay\n➳ glass\n➳ greyscale\n➳ horny\n➳ invert\n➳ jail\n➳ passed\n➳ pixelate\n➳ scale\n➳ sepia\n \n࿓ Despues etiqueta una imagen, ejemplo: ${prefix}gfx invert 5`
 }
 
 function gfxErroMensagem(efecto)
