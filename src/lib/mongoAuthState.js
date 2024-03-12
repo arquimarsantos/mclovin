@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
-const { proto } = require("@whiskeysockets/baileys/WAProto");
+const WAProto_1 = require("@whiskeysockets/baileys/WAProto");
+const auth_utils_1 = require("@whiskeysockets/baileys/lib/Utils/auth-utils");
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
 
@@ -62,41 +63,39 @@ const useMongoDBAuthState = async(config) => {
     }
   };
   const creds =
-    (await readData(`creds-${sessionId}`)) || initAuthCreds();
+    (await readData(`creds-${sessionId}`)) || (0, auth_utils_1.initAuthCreds)();
   return {
-    state: {
-      creds,
-      keys: {
-        get: async(type, ids) => {
-          const data = {};
-          await Promise.all(
-            ids.map(async(id) => {
-              let value = await readData(`${type}-${id}-${sessionId}`);
-              if(type === 'app-state-sync-key' && value) {
-                value = proto.Message.AppStateSyncKeyData.fromObject(value);
-              }
-              data[id] = value;
-            })
-          );
-          return data;
-        },
-        set: async(data) => {
-          const tasks = [];
-          for(const category in data) {
-            for(const id in data[category]) {
-              const value = data[category][id];
-              const sId = `${category}-${id}-${sessionId}`;
-              tasks.push(value ? writeData(value, sId) : removeData(sId));
+        state: {
+            creds,
+            keys: {
+                get: async (type, ids) => {
+                    const data = {};
+                    await Promise.all(ids.map(async (id) => {
+                        let value = await readData(`${type}-${id}-${sessionId}`);
+                        if (type === 'app-state-sync-key' && value) {
+                            value = WAProto_1.proto.Message.AppStateSyncKeyData.fromObject(value);
+                        }
+                        data[id] = value;
+                    }));
+                    return data;
+                },
+                set: async (data) => {
+                    const tasks = [];
+                    for (const category in data) {
+                        for (const id in data[category]) {
+                            const value = data[category][id];
+                            const file = `${category}-${id}-${sessionId}`;
+                            tasks.push(value ? writeData(value, file) : removeData(file));
+                        }
+                    }
+                    await Promise.all(tasks);
+                }
             }
-          }
-          await Promise.all(tasks);
         },
-      },
-    },
-    saveCreds: () => {
-      return writeData(creds, `creds-${sessionId}`);
-    },
-  };
+        saveCreds: () => {
+            return writeData(creds, `creds-${sessionId}`);
+        }
+    };
 };
 
 module.exports = { useMongoDBAuthState };
