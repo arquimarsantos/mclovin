@@ -409,7 +409,6 @@ console.log(`Abre su WhatsApp, entra en ${clc.bold("Dispositivos vinculados > Vi
 
 bot.ev.on('connection.update', async({ connection, lastDisconnect, receivedPendingNotifications }) => {
 const status = lastDisconnect?.error?.output?.statusCode
-/*
 if(connection === 'connecting') return
 // Flush Buffer
 if(receivedPendingNotifications && !bot.authState.creds?.myAppStateKeyId) {
@@ -419,7 +418,6 @@ bot?.ev.flush()
 console.log(e)
 }
 }
-*/
 if (connection === 'close' && status) {
 const reason = Object.entries(DisconnectReason).find(i => i[1] === status)?.[0] || 'unknown'
 console.log(`Conexão foi encerrada, status: ${reason} (${status})`)
