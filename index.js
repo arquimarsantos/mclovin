@@ -389,7 +389,7 @@ const bot = makeWASocket( {
 logger: P({ level: "silent" }),
 usePairingCode,
 mobile: false,
-browser: ["Ubuntu", "Chrome", "20.0.04"],,
+browser: ["Ubuntu", "Chrome", "20.0.04"],
 defaultQueryTimeoutMs: undefined,
 auth: {
 creds: state.creds,
