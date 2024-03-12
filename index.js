@@ -2882,7 +2882,7 @@ if (texto) return reply(toImgErroMensagem())
 await actions.sticker()
 }
 break
-case 'togifey':
+case 'togif':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!isQuotedSticker) return reply(stickerGifErroMensagem())
