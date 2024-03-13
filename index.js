@@ -3989,9 +3989,9 @@ case 'chatgpt': case 'gpt':{
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(chatGPTErroMensagem())
-const apiUrl1 = `https://api.vihangayt.asia/ai/chatgpt?q=${encodeURIComponent(q)}`
-const apiUrl2 = `https://gurugpt.cyclic.app/gpt4?prompt=${encodeURIComponent(q)}&model=llama`        
-try {   
+const apiUrl1 = `https://api.caliph.biz.id/api/ai/oai-gpt?q=${encodeURIComponent(q)}&apikey=OlOtGHuF`
+const apiUrl2 = `https://api.vihangayt.asia/ai/chatgpt?q=${encodeURIComponent(q)}`        
+try {
 const response1 = await fetch(apiUrl1)
 const responseData1 = await response1.json()
 if (response1.status === 200 && responseData1 && responseData1.status === true && responseData1.data) {
