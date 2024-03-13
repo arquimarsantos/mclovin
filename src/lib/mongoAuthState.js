@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+kconst { MongoClient } = require('mongodb');
 const { proto } = require("@whiskeysockets/baileys/WAProto");;
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
@@ -11,7 +11,9 @@ const MongoDBAuthConfig = {
 };
 
 const useMongoDBAuthState = async(config) => {
-  const client = new MongoClient(config.mongodbUri);
+  const client = new MongoClient(config.mongodbUri, {
+    connectTimeoutMS: 15000,
+  });
   const sessionId = config.sessionId;
   await client.connect();
   const db = client.db(config.databaseName);
