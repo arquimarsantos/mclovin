@@ -1,4 +1,4 @@
-kconst { MongoClient } = require('mongodb');
+const { MongoClient } = require('mongodb');
 const { proto } = require("@whiskeysockets/baileys/WAProto");;
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
