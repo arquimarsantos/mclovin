@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
-const WAProto_1 = require("@whiskeysockets/baileys/WAProto");
-const auth_utils_1 = require("@whiskeysockets/baileys/lib/Utils/auth-utils");
+const WAProto = require("@whiskeysockets/baileys/WAProto");
+const auth_utils = require("@whiskeysockets/baileys/lib/Utils/auth-utils");
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
+const generics = require("@whiskeysockets/baileys/lib/Utils/generics");
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
 
 const MongoDBAuthConfig = {
@@ -28,7 +29,7 @@ const useMongoDBAuthState = async(config) => {
     }
   };
   await ensureCollectionExists();
-  
+    
   async function writeData(data, key) {
     try {
     const informationToStore = JSON.parse(
@@ -49,12 +50,12 @@ const useMongoDBAuthState = async(config) => {
     try {
       const data = await collection.findOne({ _id: key });
       const creds = JSON.stringify(data);
-      return JSON.parse(creds, BufferJSON.reviver);
+      return JSON.parse(creds, generics.BufferJSON.reviver);
     } catch(error) {
       console.error('Erro ao ler dados:', error);
       throw error;
     }
-  }
+  }  
   const removeData = async(key) => {
     try {
       await collection.deleteOne({ _id: key });
@@ -63,7 +64,7 @@ const useMongoDBAuthState = async(config) => {
     }
   };
   const creds =
-    (await readData(`creds-${sessionId}`)) || (0, auth_utils_1.initAuthCreds)();
+    (await readData(`creds-${sessionId}`)) || (0, auth_utils.initAuthCreds)();
   return {
         state: {
             creds,
@@ -73,7 +74,7 @@ const useMongoDBAuthState = async(config) => {
                     await Promise.all(ids.map(async (id) => {
                         let value = await readData(`${type}-${id}-${sessionId}`);
                         if (type === 'app-state-sync-key' && value) {
-                            value = WAProto_1.proto.Message.AppStateSyncKeyData.fromObject(value);
+                            value = WAProto.proto.Message.AppStateSyncKeyData.fromObject(value);
                         }
                         data[id] = value;
                     }));
