@@ -1,8 +1,6 @@
 const { MongoClient } = require('mongodb');
-const WAProto = require("@whiskeysockets/baileys/WAProto");
-const auth_utils = require("@whiskeysockets/baileys/lib/Utils/auth-utils");
+const { proto } = require("@whiskeysockets/baileys/WAProto");;
 const { BufferJSON } = require('@whiskeysockets/baileys/lib/Utils/generics')
-const generics = require("@whiskeysockets/baileys/lib/Utils/generics");
 const { initAuthCreds } = require('@whiskeysockets/baileys/lib/Utils/auth-utils')
 
 const MongoDBAuthConfig = {
@@ -13,9 +11,7 @@ const MongoDBAuthConfig = {
 };
 
 const useMongoDBAuthState = async(config) => {
-  const client = new MongoClient(config.mongodbUri, {
-    connectTimeoutMS: 15000,
-  });
+  const client = new MongoClient(config.mongodbUri);
   const sessionId = config.sessionId;
   await client.connect();
   const db = client.db(config.databaseName);
@@ -50,7 +46,7 @@ const useMongoDBAuthState = async(config) => {
     try {
       const data = await collection.findOne({ _id: key });
       const creds = JSON.stringify(data);
-      return JSON.parse(creds, generics.BufferJSON.reviver);
+      return JSON.parse(creds, BufferJSON.reviver);
     } catch(error) {
       console.error('Erro ao ler dados:', error);
       throw error;
@@ -64,7 +60,7 @@ const useMongoDBAuthState = async(config) => {
     }
   };
   const creds =
-    (await readData(`creds-${sessionId}`)) || (0, auth_utils.initAuthCreds)();
+    (await readData(`creds-${sessionId}`)) || (0, initAuthCreds)();
   return {
         state: {
             creds,
@@ -74,7 +70,7 @@ const useMongoDBAuthState = async(config) => {
                     await Promise.all(ids.map(async (id) => {
                         let value = await readData(`${type}-${id}-${sessionId}`);
                         if (type === 'app-state-sync-key' && value) {
-                            value = WAProto.proto.Message.AppStateSyncKeyData.fromObject(value);
+                            value = proto.Message.AppStateSyncKeyData.fromObject(value);
                         }
                         data[id] = value;
                     }));
