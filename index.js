@@ -369,8 +369,10 @@ console.log(`Sessão está sem conexão, verifica a internet.`)
 return connect()
 }
 // const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
+// AWS : mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority
+// GoogleCloud : mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority
 const { state, saveCreds } = await useMongoDBAuthState({		
-mongodbUri: 'mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority',		
+mongodbUri: 'mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority',		
 databaseName: 'mclovin',
 collectionName: 'creds',
 sessionId: 'client-01'	
@@ -409,6 +411,7 @@ console.log(`Abre su WhatsApp, entra en ${clc.bold("Dispositivos vinculados > Vi
 
 bot.ev.on('connection.update', async({ connection, lastDisconnect, receivedPendingNotifications }) => {
 const status = lastDisconnect?.error?.output?.statusCode
+/*
 if(connection === 'connecting') return
 // Flush Buffer
 if(receivedPendingNotifications && !bot.authState.creds?.myAppStateKeyId) {
@@ -418,6 +421,7 @@ bot?.ev.flush()
 console.log(e)
 }
 }
+*/
 if (connection === 'close' && status) {
 const reason = Object.entries(DisconnectReason).find(i => i[1] === status)?.[0] || 'unknown'
 console.log(`Conexão foi encerrada, status: ${reason} (${status})`)
