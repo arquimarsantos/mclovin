@@ -3985,32 +3985,21 @@ reply(linkNaoRedefiniuErroMensagem())
 }
 }
 break
-case 'chatgpt': case 'gpt':{
+case 'chatgpt': case 'gpt':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(chatGPTErroMensagem())
-const apiUrl1 = `https://api.caliph.biz.id/api/ai/oai-gpt?q=${encodeURIComponent(q)}&apikey=OlOtGHuF`
-const apiUrl2 = `https://api.vihangayt.asia/ai/chatgpt?q=${encodeURIComponent(q)}`        
 try {
-const response1 = await fetch(apiUrl1)
-const responseData1 = await response1.json()
-if (response1.status === 200 && responseData1 && responseData1.status === true && responseData1.data) {
-const message = responseData1.data
-await bot.sendMessage(from, { text: message, mentions: [sender] }, { quoted: info })
-} else {
-const response2 = await fetch(apiUrl2)
-const responseData2 = await response2.json()
-if (response2.status === 200 && responseData2 && responseData2.data) {
-const message = responseData2.data
-await bot.sendMessage(from, { text: message, mentions: [sender] }, { quoted: info })
+const apiUrl = await fetch(`https://ultimetron.guruapi.tech/gpt4?prompt=${encodeURIComponent(q)}`)
+const x = await apiUrl.json()
+if (x.result.success == true) {
+var resposta = x.result.reply
+await bot.sendMessage(from, { text: resposta }, { quoted: info })
 } else {
 reply(chatGPTApi1ErroMensagem())
 }
-}
 } catch (error) {
-console.error(error)
 reply(chatGPTApi2ErroMensagem())
-}
 }
 }
 break
