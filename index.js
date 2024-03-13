@@ -27,8 +27,8 @@ const axios = require('axios')
 const addStickerMetaData = require("./src/lib/addStickerMetaData.js")
 const { translate } = require('@vitalets/google-translate-api')
 const sightengine = require('sightengine')('1322141040', '9EWBYkeg9N8NiQNVAVa9FSpHysV5twTg')
-const mongoURL = "mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority";
-const { MongoClient } = require("mongodb");
+// const mongoURL = "mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority";
+// const { MongoClient } = require("mongodb");
 const { TelegraPh, UploadFileUgu } = require("./src/lib/uploader.js")
 const { 
 prefix,
