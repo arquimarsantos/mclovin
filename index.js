@@ -2958,6 +2958,7 @@ reply(verificarImagemToAnimeErroMensagem())
 }
 }
 break
+*/
 case 'sim': case 'simi': case 'simsimi':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -2976,7 +2977,6 @@ reply(simiErroMensagem())
 }
 }
 break
-*/
 case 'pfp':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
