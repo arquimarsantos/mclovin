@@ -7,7 +7,7 @@
 */
 
 const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
-const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
+// const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
@@ -368,15 +368,17 @@ if (error){
 console.log(`Sessão está sem conexão, verifica a internet.`)
 return connect()
 }
-// const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
 // AWS : mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority
 // GoogleCloud : mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority
+/*
 const { state, saveCreds } = await useMongoDBAuthState({		
 mongodbUri: 'mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority',		
 databaseName: 'mclovin',
 collectionName: 'creds',
 sessionId: 'client-01'	
 })
+*/
+const { state, saveCreds } = await useMultiFileAuthState("sessions");
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const cfonts = require('cfonts')
 const bot = makeWASocket( {
