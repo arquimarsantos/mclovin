@@ -2375,7 +2375,7 @@ throw new Error(error)
 })
 }
 
-async function comprimirSticker(bot, from, pushname, ipath, opath) {
+async function comprimirSticker(bot, from, pushname, ipath, opath, info) {
 ff(ipath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(224,iw)':min'(224,ih)':force_original_aspect_ratio=decrease,fps=15, pad=224:224:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(opath)
 .on("end", async (error) => {
 if (error) {
@@ -2386,7 +2386,7 @@ throw new Error(error)
 }
 const mediaWithMetaDataPath = await addStickerMetaData(opath, createStickerMetaData(pushname))
 const media = fs.readFileSync(mediaWithMetaDataPath)
-await bot.sendMessage(from, { sticker: media })
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
 fs.unlinkSync(mediaWithMetaDataPath)
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
