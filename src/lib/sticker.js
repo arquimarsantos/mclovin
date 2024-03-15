@@ -8,7 +8,7 @@ const util = require('util')
 const fs = require('fs')
 const path = require('path')
 
-ffmpeg.setFfmpegPath(pathToFfmpeg)
+//ffmpeg.setFfmpegPath(pathToFfmpeg)
 
 class Actions{
 
@@ -82,7 +82,7 @@ let resultSticker = await fs.promises.readFile(outputPath)
 if (resultSticker.length > 1000000) {
 fs.unlinkSync(outputPath)
 // comprimir
-return await comprimirSticker(this.bot, this.remoteJid, this.pushname, inputPath, outputPath)
+return await comprimirSticker(this.bot, this.remoteJid, this.pushname, inputPath, outputPath, this.baileysMessage)
 }
 const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData(this.pushname))
 const media = fs.readFileSync(mediaWithMetaDataPath)
