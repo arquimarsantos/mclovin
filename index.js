@@ -241,6 +241,8 @@ igDownloadPostsBaixadosMensagem,
 igStoryArgsMensagem,
 igStoryEnviandoMensagem,
 igStoryBaixadosMensagem,
+wallpaperArgsMensagem,
+wallpaperErroMensagem,
 pinterestArgsMensagem,
 pinterestErroMensagem,
 pinterestDownloadArgsMensagem,
@@ -263,6 +265,8 @@ imgBuscarErroMensagem,
 imgBuscarEnviadosMensagem,
 randompfpArgsMensagem,
 randomaestheticArgsMensagem,
+randomwlpArgsMensagem,
+randomfanartArgsMensagem,
 randomanimeArgsMensagem,
 imagemVideoAudioStickerErroMensagem,
 toDocErroMensagem,
@@ -355,10 +359,13 @@ var stickersearchactived = false
 var imgsearchactived = false
 var instagramdlactived = false
 var igstoryactived = false
+var wallpaperactived = false
 var pinterestactived = false
 var scbuscaractived = false
 var randompfpactived = false
 var randomaestheticactived = false
+var randomwlpactived = false
+var randomfanartactived = false
 var randomanimeactived = false
 const rsuperemojis = ['✔', '☑', '🧡', '💜', '💚', '❤', '💞', '💟', '🌙', '🆗', '🆙', '✅', '💙', '💗', '💋', '☪', '💕', '💖', '🤍', '❣']
 
@@ -903,6 +910,39 @@ igstoryactived = false
 }
 }
 break
+case 'w': case 'wallpaper':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (!texto) return reply(wallpaperArgsMensagem(prefix, cmd))
+const emojis = ['✅', '✔', '☑', '💜', '💙']
+const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
+bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
+try {
+const sleepwallpaper = (ms) => {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+let apiurl = await fetch(`https://api.lolhuman.xyz/api/wallpaper?apikey=GataDios&query=${encodeURI(texto)}`)
+if (wallpaperactived == false) {
+wallpaperactived = true
+var wallpapercount = 0
+const buscalimite = 5;
+for (let i = 0; i < Math.min(buscalimite); i++) {
+await sleepwallpaper(3000)
+wallpapercount++
+await bot.sendMessage(from, { image: apiurl }, { quoted: info })
+}
+if(wallpapercount == buscalimite) {
+wallpaperactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
+} catch (e) {
+reply(wallpaperErroMensagem())
+wallpaperactived = false
+}
+}
+break
 case 'p': case 'pimg': case 'pinterest':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -1034,7 +1074,8 @@ try {
 const sleepstksearch = (ms) => {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
-let api = await fetch(`https://api.ouzen.xyz/searching/stickersearch?query=${encodeURI(texto)}&apikey=zenzkey_91737a4ecd09`)
+// let api = await fetch(`https://api.ouzen.xyz/searching/stickersearch?query=${encodeURI(texto)}&apikey=zenzkey_91737a4ecd09`)
+let api = await fetch(`https://api.lolhuman.xyz/api/stickerwa?apikey=GataDios&query=${encodeURI(texto)}`)
 let x = await api.json()
 if (stickersearchactived == false) {
 stickersearchactived = true
@@ -1047,17 +1088,29 @@ const emojis = ['✅', '🧩', '🆗']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
 bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
 for (let i = 0; i < Math.min(x.result.length); i++) {
+for (let s = 0; i < Math.min(x.result[i].stickers.length); s++) {
 const sleep = [3000, 5000, 7000]
 const randomsleep = sleep[Math.floor(Math.random() * sleep.length)]
+if (buscascount == 0) {
+await bot.sendMessage(from, { text: `
+╭──┤㊅ 𝑺𝑻𝑰𝑪𝑲𝑬𝑹.𝑳𝒀⃟🧩 ㊅├──┤
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│📦 𝙿𝚊𝚚𝚞𝚎𝚝𝚎:
+│ ${x.result[i].title}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│👤 𝙰𝚞𝚝𝚘𝚛:
+│ ${x.result[i].author}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│⚡ 𝚃𝚘𝚝𝚊𝚕:
+│ ${x.result[i].stickers.length}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈` }, { quoted: info })
+}
 await sleepstksearch(randomsleep)
 buscascount++
-let buff = Buffer.isBuffer(x.result[i]) ? x.result[i] : /^data:.*?\/.*?;base64,/i.test(x.result[i]) ? Buffer.from(x.result[i].split`,`[1], 'base64') : /^https?:\/\//.test(x.result[i]) ? await (await fetchBuffer(x.result[i])) : fs.existsSync(x.result[i]) ? fs.readFileSync(x.result[i]) : Buffer.alloc(0)
+let buff = Buffer.isBuffer(x.result[i].stickers[s]) ? x.result[i].stickers[s] : /^data:.*?\/.*?;base64,/i.test(x.result[i].stickers[s]) ? Buffer.from(x.result[i].stickers[s].split`,`[1], 'base64') : /^https?:\/\//.test(x.result[i].stickers[s]) ? await (await fetchBuffer(x.result[i].stickers[s])) : fs.existsSync(x.result[i].stickers[s]) ? fs.readFileSync(x.result[i].stickers[s]) : Buffer.alloc(0)
 let tmpFileIn = ''
-if (x.result[i].includes(".png")) {
+if (x.result[i].stickers[s].includes(".png")) {
 tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.png`)
-} else if (x.result[i].includes(".gif")) {
-tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.gif`)
-}
 const tmpFileOut = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.webp`)
 fs.writeFileSync(tmpFileIn, buff)
 ffmpeg(tmpFileIn).toFormat("webp").save(tmpFileOut).on("end", async (error) => {
@@ -1082,12 +1135,28 @@ fs.unlinkSync(tmpFileOut)
 throw new Error(error)
 }
 })
-}
-if(buscascount == x.result.length) {
+if(buscascount == x.result[i].stickers.length) {
 setTimeout( () => {
-reply(stickerBuscarEnviadosMensagem(buscascount))
+reply(stickerBuscarEnviadosMensagem())
 }, 8000)
-stickersearchactived = false
+return stickersearchactived = false
+}
+} else if (x.result[i].stickers[s].includes(".webp")) {
+tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.webp`)
+fs.writeFileSync(tmpFileIn, buff)
+const mediaWithMetaDataPath = await addStickerMetaData(tmpFileIn, createStickerMetaData(pushname))
+const m = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: m }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(tmpFileIn)
+if(buscascount == x.result[i].stickers.length) {
+setTimeout( () => {
+reply(stickerBuscarEnviadosMensagem())
+}, 8000)
+return stickersearchactived = false
+}
+}
+}
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1199,6 +1268,67 @@ randomaestheticactived = false
 }
 }
 break
+case 'randomwlp':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (texto) return reply(randomwlpArgsMensagem(prefix, cmd))
+try {
+const sleeprandomwlp = (ms) => {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+let apiurl = await fetch('https://api.lolhuman.xyz/api/random2/wallpaper?apikey=GataDios')
+if (randomwlpactived == false) {
+randomwlpactived = true
+var randomwlpcount = 0
+const buscalimite = 5;
+for (let i = 0; i < Math.min(buscalimite); i++) {
+await sleeprandomwlp(3000)
+randomwlpcount++
+await bot.sendMessage(from, { image: apiurl }, { quoted: info })
+}
+if(randomwlpcount == buscalimite) {
+randomwlpactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
+} catch (e) {
+reply(apiErroMensagem())
+randomwlpactived = false
+}
+}
+break
+case 'randomfanart': case 'fanart':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (texto) return reply(randomfanartArgsMensagem(prefix, cmd))
+try {
+const sleepfanart = (ms) => {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+let apiurl = await fetch('https://api.lolhuman.xyz/api/random/art?apikey=GataDios')
+if (randomfanartactived == false) {
+randomfanartactived = true
+var randomfanartcount = 0
+const buscalimite = 5;
+for (let i = 0; i < Math.min(buscalimite); i++) {
+await sleepfanart(3000)
+randomfanartcount++
+await bot.sendMessage(from, { image: apiurl }, { quoted: info })
+}
+if(randomfanartcount == buscalimite) {
+randomfanartactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
+} catch (e) {
+reply(apiErroMensagem())
+randomfanartactived = false
+}
+}
+break
+/*
 case 'randomanime': case 'anime':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -1229,7 +1359,6 @@ randomanimeactived = false
 }
 }
 break
-/*
 case 'couples':
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -3149,7 +3278,7 @@ const secs = Math.floor(seconds % 60);
 return (time = `${days}dia(s), ${pad(hours)}h, ${pad(minutes)}m, ${pad(secs)}s`);
 };
 const uptime = () => formatTime(process.uptime());
-let upTxt = `⚡ Velocidad de respuesta: *${latensie.toFixed(4)}ms*\n🟢 Tiempo activo: *${uptime()}*\n🖥 Host: *Koyeb*`;
+let upTxt = `⚡ Velocidad de respuesta: *${latensie.toFixed(4)}ms*\n🟢 Tiempo activo: *${uptime()}*`;
 reply(upTxt)
 }
 break
