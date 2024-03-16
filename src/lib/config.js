@@ -7,7 +7,7 @@ const { randomBytes } = require('crypto')
 const ff = require('fluent-ffmpeg')
 const path = require('path')
 const fs = require('fs')
-const prefix = "!"
+const prefix = "¥"
 const nomedono = "arquimar 🌙"
 const contatodono = "wa.me/557197108211"
 const numerodono = ["557197108211"]
@@ -1669,7 +1669,7 @@ return 'Todas las buscas fueron enviadas! ☑'
 
 function stickerBuscarArgsMensagem(prefix, cmd)
 {
-return `[❗] Ingrese el nombre de un pack de stickers para buscar\n \nEjemplo: ${prefix}${cmd} cr7\n \n࿓ Si quiere saber el nombre de los packs con más facilidad descarga la aplicación *sticker maker*`
+return `[❗] Ingrese un nombre para buscar\n \nEjemplo: ${prefix}${cmd} gatos\n \n࿓ Si quiere saber los nombres con más facilidad descarga la aplicación *Sticker.ly*`
 }
 
 function stickerBuscarErroMensagem()
