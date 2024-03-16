@@ -51,6 +51,7 @@ return `
 ┝ _➛${prefix}instadl || ${prefix}igdl *<link>*
 ┝ _➛${prefix}igstory *<texto>*
 ┝ _➛${prefix}tiktokdl || ${prefix}ttkdl *<link>*
+┝ _➛${prefix}wallpaper || ${prefix}w *<texto>*
 ┝ _➛${prefix}pinterest || ${prefix}p *<texto>*
 ┝ _➛${prefix}pinterestdl *<link>*
 ┝ _➛${prefix}soundcloud || ${prefix}sc *<link>*
@@ -58,6 +59,8 @@ return `
 ┝ _➛${prefix}stickerbuscar || ${prefix}sbuscar *<texto>*
 ┝ _➛${prefix}randomprofile || ${prefix}randompfp
 ┝ _➛${prefix}aesthetic
+┝ _➛${prefix}randomwlp
+┝ _➛${prefix}randomfanart || ${prefix}fanart
 ┝ _➛${prefix}randomanime || ${prefix}anime
 ┝ _➛${prefix}attp *<texto>* || ${prefix}attp2 *<texto>*
 ┝ _➛${prefix}ttp *<texto>* || ${prefix}ttp2(6) *<texto>*
@@ -1574,6 +1577,11 @@ function igStoryEnviandoMensagem(user)
 return `Enviando historia(s) de *${user}* ⌛\n \nSi no llegar nada talvez la cuenta sea privada.`
 }
 
+function wallpaperErroMensagem()
+{
+return '[❗] Esta busca no fue encontrada, talvez no exista, fue ingresada incorrectamente or ocurrió un error en el sistema.'
+}
+
 function pinterestErroMensagem()
 {
 return '[❗] Esta busca no fue encontrada, talvez no exista, fue ingresada incorrectamente or ocurrió un error en el sistema.'
@@ -1582,6 +1590,11 @@ return '[❗] Esta busca no fue encontrada, talvez no exista, fue ingresada inco
 function igStoryBaixadosMensagem()
 {
 return 'Todas las historias fueron descargadas! ✔'
+}
+
+function wallpaperArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese un nombre para buscar\n \nEjemplo: ${prefix}${cmd} naruto`
 }
 
 function pinterestArgsMensagem(prefix, cmd)
@@ -1664,9 +1677,9 @@ function stickerBuscarErroMensagem()
 return '[❗] Esta busca no fue encontrada, talvez no exista, fue ingresada incorrectamente or ocurrió un error en el sistema.'
 }
 
-function stickerBuscarEnviadosMensagem(total)
+function stickerBuscarEnviadosMensagem()
 {
-return `Todos los stickers fueron enviados! ✔\n \nϟ Total: *${total}*`
+return `ϟ Todos los stickers fueron enviados! ✔`
 }
 
 function imgBuscarArgsMensagem(prefix, cmd)
@@ -1690,6 +1703,16 @@ return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
 }
 
 function randomaestheticArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
+}
+
+function randomwlpArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
+}
+
+function randomfanartArgsMensagem(prefix, cmd)
 {
 return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
 }
@@ -2842,6 +2865,8 @@ igDownloadPostsBaixadosMensagem,
 igStoryArgsMensagem,
 igStoryEnviandoMensagem,
 igStoryBaixadosMensagem,
+wallpaperArgsMensagem,
+wallpaperErroMensagem,
 pinterestArgsMensagem,
 pinterestErroMensagem,
 pinterestImgsBaixadasMensagem,
@@ -2865,6 +2890,8 @@ imgBuscarErroMensagem,
 imgBuscarEnviadosMensagem,
 randompfpArgsMensagem,
 randomaestheticArgsMensagem,
+randomwlpArgsMensagem,
+randomfanartArgsMensagem,
 randomanimeArgsMensagem,
 imagemVideoAudioStickerErroMensagem,
 toDocErroMensagem,
