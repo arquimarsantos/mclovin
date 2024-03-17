@@ -2962,6 +2962,25 @@ const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const image = await UploadFileUgu(img)
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 txt = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/creator/smeme?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txt)}&url=${encodeURIComponent(util.format(image.url))}&apikey=zenzkey_91737a4ecd09`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} catch (e) {
+reply(apiErroMensagem())
+}
+}
+break
+case 'meme2': case 'mememaker2':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (!isQuotedImage) return reply(imagemErroMensagem())
+if (!texto) return reply(memeMakerArgsMensagem(prefix, cmd))
+if (!args[0] || !args[1]) return reply(memeMakerArgsMensagem(prefix, cmd))
+const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
+try {
+const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
+const image = await UploadFileUgu(img)
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+txt = args.slice(1).join(' ')
 const res = await fetch(`https://api.lolhuman.xyz/api/memecreator?apikey=GataDios&text1=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txt)}&img=${encodeURIComponent(util.format(image.url))}`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
