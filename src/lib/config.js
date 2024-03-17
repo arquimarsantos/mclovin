@@ -53,7 +53,7 @@ return `
 ┝ _➛${prefix}tiktokdl || ${prefix}ttkdl *<link>*
 ┝ _➛${prefix}wallpaper || ${prefix}w *<texto>*
 ┝ _➛${prefix}pinterest || ${prefix}p *<texto>*
-┝ _➛${prefix}meme || mememaker *<texto>* *<texto2>*
+┝ _➛${prefix}meme || ${prefix}mememaker *<texto>* *<texto2>*
 ┝ _➛${prefix}pinterestdl *<link>*
 ┝ _➛${prefix}soundcloud || ${prefix}sc *<link>*
 ┝ _➛${prefix}soundcloudbuscar || ${prefix}scbuscar *<texto>*
