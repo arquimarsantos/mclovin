@@ -24,8 +24,8 @@ const menuimagem9 = "./src/media/menu9.jpg"
 const menuimagem10 = "./src/media/menu10.jpg"
 const menuimagem11 = "./src/media/menu11.jpg"
 const semfotoimagem = "./src/media/no_profile.jpg"
-const tempfolder = path.resolve('./src/tmp')
-const audiotempfolder = path.resolve('./src/audios')
+const tempfolder = path.join('./src/tmp')
+const audiotempfolder = path.join('./src/audios')
 
 function createStickerMetaData(pushName) {
 return {
@@ -53,6 +53,7 @@ return `
 ┝ _➛${prefix}tiktokdl || ${prefix}ttkdl *<link>*
 ┝ _➛${prefix}wallpaper || ${prefix}w *<texto>*
 ┝ _➛${prefix}pinterest || ${prefix}p *<texto>*
+┝ _➛${prefix}meme || mememaker *<texto>* *<texto2>*
 ┝ _➛${prefix}pinterestdl *<link>*
 ┝ _➛${prefix}soundcloud || ${prefix}sc *<link>*
 ┝ _➛${prefix}soundcloudbuscar || ${prefix}scbuscar *<texto>*
@@ -1807,19 +1808,24 @@ function gfxErroMensagem(efecto)
 return `[❗] *${efecto}* no esta en la lista de efectos, usa ${prefix}gfx para ver los efectos disponibles.`
 }
 
-function comandosGfxErroMensagem(prefix, cmd, cmd2)
+function comandosErroMensagem(prefix, cmd, cmd2)
 {
 return `[❗] Usa ${prefix}${cmd} ${cmd2} <cantidad>`
 }
 
-function comandos2GfxErroMensagem(prefix, cmd, cmd2)
+function comandos2ErroMensagem(prefix, cmd, cmd2)
 {
 return `[❗] Usa ${prefix}${cmd} ${cmd2} <altura> <anchura>`
 }
 
-function comandos3GfxErroMensagem(prefix, cmd, cmd2)
+function comandos3ErroMensagem(prefix, cmd, cmd2)
 {
 return `[❗] Usa ${prefix}${cmd} ${cmd2} <mensaje> <nombre>`
+}
+
+function memeMakerArgsMensagem(prefix, cmd)
+{
+return `[❗] Usa ${prefix}${cmd} <texto> <texto2>`
 }
 
 function funcEmUsoErroMensagem() 
@@ -2438,62 +2444,62 @@ const ttsRu = require('node-gtts')('ru')
 const ttsKo = require('node-gtts')('ko')
 const ttsSv = require('node-gtts')('sv')
 if (idioma == 'pt') {
-const templocalpt = path.resolve(`src/audios/resPt${randomBytes(3).toString('hex')}.mp3`)
+const templocalpt = path.join(`src/audios/resPt${randomBytes(3).toString('hex')}.mp3`)
 ttsPt.save(templocalpt, texto, function () {
 resolve(templocalpt)
 })
 } else if (idioma == 'en') {
-const templocalen = path.resolve(`src/audios/resEn${randomBytes(3).toString('hex')}.mp3`)
+const templocalen = path.join(`src/audios/resEn${randomBytes(3).toString('hex')}.mp3`)
 ttsEn.save(templocalen, texto, function () {
 resolve(templocalen)
 })
 } else if (idioma == 'jp') {
-const templocaljp = path.resolve(`src/audios/resJp${randomBytes(3).toString('hex')}.mp3`)
+const templocaljp = path.join(`src/audios/resJp${randomBytes(3).toString('hex')}.mp3`)
 ttsJp.save(templocaljp, texto, function () {
 resolve(templocaljp)
 })
 } else if (idioma == 'es') {
-const templocales = path.resolve(`src/audios/resEs${randomBytes(3).toString('hex')}.mp3`)
+const templocales = path.join(`src/audios/resEs${randomBytes(3).toString('hex')}.mp3`)
 ttsEs.save(templocales, texto, function () {
 resolve(templocales)
 })
 } else if (idioma == 'it') {
-const templocalit = path.resolve(`src/audios/resIt${randomBytes(3).toString('hex')}.mp3`)
+const templocalit = path.join(`src/audios/resIt${randomBytes(3).toString('hex')}.mp3`)
 ttsIt.save(templocalit, texto, function () {
 resolve(templocalit)
 })
 } else if (idioma == 'ru') {
-const templocalru = path.resolve(`src/audios/resRu${randomBytes(3).toString('hex')}.mp3`)
+const templocalru = path.join(`src/audios/resRu${randomBytes(3).toString('hex')}.mp3`)
 ttsRu.save(templocalru, texto, function () {
 resolve(templocalru)
 })
 } else if (idioma == 'ko') {
-const templocalko = path.resolve(`src/audios/resKo${randomBytes(3).toString('hex')}.mp3`)
+const templocalko = path.join(`src/audios/resKo${randomBytes(3).toString('hex')}.mp3`)
 ttsKo.save(templocalko, texto, function () {
 resolve(templocalko)
 })
 } else if (idioma == 'sv') {
-const templocalsv = path.resolve(`src/audios/resSv${randomBytes(3).toString('hex')}.mp3`)
+const templocalsv = path.join(`src/audios/resSv${randomBytes(3).toString('hex')}.mp3`)
 ttsSv.save(templocalsv, texto, function () {
 resolve(templocalsv)
 })
 } else if (idioma == 'ar') {
-const templocalar = path.resolve(`src/audios/resAr${randomBytes(3).toString('hex')}.mp3`)
+const templocalar = path.join(`src/audios/resAr${randomBytes(3).toString('hex')}.mp3`)
 ttsAr.save(templocalar, texto, function () {
 resolve(templocalar)
 })
 } else if (idioma == 'fr') {
-const templocalfr = path.resolve(`src/audios/resFr${randomBytes(3).toString('hex')}.mp3`)
+const templocalfr = path.join(`src/audios/resFr${randomBytes(3).toString('hex')}.mp3`)
 ttsFr.save(templocalfr, texto, function () {
 resolve(templocalfr)
 })
 } else if (idioma == 'de') {
-const templocalde = path.resolve(`src/audios/resDe${randomBytes(3).toString('hex')}.mp3`)
+const templocalde = path.join(`src/audios/resDe${randomBytes(3).toString('hex')}.mp3`)
 ttsDe.save(templocalde, texto, function () {
 resolve(templocalde)
 })
 } else if (idioma == 'id') {
-const templocalid = path.resolve(`src/audios/resId${randomBytes(3).toString('hex')}.mp3`)
+const templocalid = path.join(`src/audios/resId${randomBytes(3).toString('hex')}.mp3`)
 ttsId.save(templocalid, texto, function () {
 resolve(templocalid)
 })
@@ -2585,7 +2591,7 @@ let buffer = Buffer.from([])
 for await (const chunk of stream){
 buffer = Buffer.concat([buffer, chunk])
 }
-const filePath = path.resolve(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
+const filePath = path.join(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
 await writeFile(filePath, buffer)
 return filePath
 }
@@ -2601,7 +2607,7 @@ let buffer = Buffer.from([])
 for await (const chunk of stream){
 buffer = Buffer.concat([buffer, chunk])
 }
-const filePath = path.resolve(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
+const filePath = path.join(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
 await writeFile(filePath, buffer)
 return filePath
 }
@@ -2617,7 +2623,7 @@ let buffer = Buffer.from([])
 for await (const chunk of stream){
 buffer = Buffer.concat([buffer, chunk])
 }
-const filePath = path.resolve(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
+const filePath = path.join(tempfolder, `${fileName}.`+await getExtension(content.mimetype))
 await writeFile(filePath, buffer)
 return filePath
 }
@@ -2633,7 +2639,7 @@ let buffer = Buffer.from([])
 for await (const chunk of stream){
 buffer = Buffer.concat([buffer, chunk])
 }
-const filePath = path.resolve(audiotempfolder, `${fileName}.`+await getExtension(content.mimetype))
+const filePath = path.join(audiotempfolder, `${fileName}.`+await getExtension(content.mimetype))
 await writeFile(filePath, buffer)
 return filePath
 }
@@ -2907,9 +2913,10 @@ fraseErroMensagem,
 audioFxErroMensagem,
 gfxArgsMensagem,
 gfxErroMensagem,
-comandosGfxErroMensagem,
-comandos2GfxErroMensagem,
-comandos3GfxErroMensagem,
+comandosErroMensagem,
+comandos2ErroMensagem,
+comandos3ErroMensagem,
+memeMakerArgsMensagem,
 bemvindoEstaAtivoErroMensagem,
 bemvindoDoisEstaAtivoErroMensagem,
 ephotoErroMensagem,
