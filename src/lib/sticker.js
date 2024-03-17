@@ -37,7 +37,7 @@ extendedTextMessage: this.baileysMessage?.message?.extendedTextMessage?.text
 const mediaMessage = getMediaMessageContent(this.baileysMessage, messageTypes)
 if (this.isImage) {
 const inputPath = await downloadImage(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
-const outputPath = path.resolve(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
 ffmpeg(inputPath).outputOptions(["-y", "-vcodec libwebp", "-lossless 1", "-qscale 1", "-loop 0", "-an", "-vsync 0", "-s 512x512"]).toFormat("webp").save(outputPath)
 .on("end", async (error) => {
 if (error) {
@@ -68,7 +68,7 @@ const haveSecondsRule = seconds <= sizeInSeconds;
 if (!haveSecondsRule) return this.responder(videoLongoErroMensagem(sizeInSeconds))
 this.responder(criandoStickerMensagem())
 const inputPath = await downloadVideo(this.baileysMessage, `${Math.floor(Math.random() * 10000)}`)
-const outputPath = path.resolve(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
 ffmpeg(inputPath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(outputPath)
 .on("end", async (error) => {
 if (error) {
