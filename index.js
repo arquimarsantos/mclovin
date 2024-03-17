@@ -6,7 +6,7 @@
 * Email: arquimarsx@gmail.com
 */
 
-const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
+const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 // const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
@@ -282,9 +282,10 @@ fraseErroMensagem,
 audioFxErroMensagem,
 gfxArgsMensagem,
 gfxErroMensagem,
-comandosGfxErroMensagem,
-comandos2GfxErroMensagem,
-comandos3GfxErroMensagem,
+comandosErroMensagem,
+comandos2ErroMensagem,
+comandos3ErroMensagem,
+memeMakerArgsMensagem,
 ephotoErroMensagem,
 textproErroMensagem,
 afxErroMensagem,
@@ -1087,8 +1088,10 @@ var buscascount = 0
 const emojis = ['✅', '🧩', '🆗']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
 bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
-for (let i = 0; i < Math.min(x.result.length); i++) {
-for (let s = 0; i < Math.min(x.result[i].stickers.length); s++) {
+var stklista = x.result
+var randomstklista = stklista[Math.floor(Math.random() * stklista.length)]
+for (let i = 0; i < Math.min(stklista.length); i++) {
+for (let s = 0; i < Math.min(stklista[i].stickers.length); s++) {
 const sleep = [3000, 5000, 7000]
 const randomsleep = sleep[Math.floor(Math.random() * sleep.length)]
 if (buscascount == 0) {
@@ -1096,20 +1099,20 @@ await bot.sendMessage(from, { text: `
 ╭──┤㊅ 𝑺𝑻𝑰𝑪𝑲𝑬𝑹.𝑳𝒀⃟🧩 ㊅├──┤
 │┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 │📦 𝙿𝚊𝚚𝚞𝚎𝚝𝚎:
-│ ${x.result[i].title}
+│ ${randomstklista.title}
 │┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 │👤 𝙰𝚞𝚝𝚘𝚛:
-│ ${x.result[i].author}
+│ ${randomstklista.author}
 │┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 │⚡ 𝚃𝚘𝚝𝚊𝚕:
-│ ${x.result[i].stickers.length}
+│ ${randomstklista.stickers.length}
 │┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈` }, { quoted: info })
 }
 await sleepstksearch(randomsleep)
 buscascount++
-let buff = Buffer.isBuffer(x.result[i].stickers[s]) ? x.result[i].stickers[s] : /^data:.*?\/.*?;base64,/i.test(x.result[i].stickers[s]) ? Buffer.from(x.result[i].stickers[s].split`,`[1], 'base64') : /^https?:\/\//.test(x.result[i].stickers[s]) ? await (await fetchBuffer(x.result[i].stickers[s])) : fs.existsSync(x.result[i].stickers[s]) ? fs.readFileSync(x.result[i].stickers[s]) : Buffer.alloc(0)
+let buff = Buffer.isBuffer(randomstklista.stickers[s]) ? randomstklista.stickers[s] : /^data:.*?\/.*?;base64,/i.test(randomstklista.stickers[s]) ? Buffer.from(randomstklista.stickers[s].split`,`[1], 'base64') : /^https?:\/\//.test(randomstklista.stickers[s]) ? await (await fetchBuffer(randomstklista.stickers[s])) : fs.existsSync(randomstklista.stickers[s]) ? fs.readFileSync(randomstklista.stickers[s]) : Buffer.alloc(0)
 let tmpFileIn = ''
-if (x.result[i].stickers[s].includes(".png")) {
+if (randomstklista.stickers[s].includes(".png")) {
 tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.png`)
 const tmpFileOut = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.webp`)
 fs.writeFileSync(tmpFileIn, buff)
@@ -1119,6 +1122,7 @@ console.log(error)
 fs.unlinkSync(tmpFileIn)
 fs.unlinkSync(tmpFileOut)
 throw new Error(error)
+return stickersearchactived = false
 }
 const buf = fs.readFileSync(tmpFileOut)
 const mediaWithMetaDataPath = await addStickerMetaData(buf,createStickerMetaData(pushname))
@@ -1133,15 +1137,16 @@ console.log(error)
 fs.unlinkSync(tmpFileIn)
 fs.unlinkSync(tmpFileOut)
 throw new Error(error)
+return stickersearchactived = false
 }
 })
-if(buscascount == x.result[i].stickers.length) {
+if(buscascount == randomstklista.stickers.length) {
 setTimeout( () => {
 reply(stickerBuscarEnviadosMensagem())
 }, 8000)
 return stickersearchactived = false
 }
-} else if (x.result[i].stickers[s].includes(".webp")) {
+} else if (randomstklista.stickers[s].includes(".webp")) {
 tmpFileIn = path.join(`./src/tmp/${Math.floor(Math.random() * 10000)}.webp`)
 fs.writeFileSync(tmpFileIn, buff)
 const mediaWithMetaDataPath = await addStickerMetaData(tmpFileIn, createStickerMetaData(pushname))
@@ -1149,7 +1154,7 @@ const m = fs.readFileSync(mediaWithMetaDataPath)
 await bot.sendMessage(from, { sticker: m }, { quoted: info })
 fs.unlinkSync(mediaWithMetaDataPath)
 fs.unlinkSync(tmpFileIn)
-if(buscascount == x.result[i].stickers.length) {
+if(buscascount == randomstklista.stickers.length) {
 setTimeout( () => {
 reply(stickerBuscarEnviadosMensagem())
 }, 8000)
@@ -2841,80 +2846,80 @@ const image = await UploadFileUgu(img)
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 if (args[0] == 'blur') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/blur?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'brighten') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/brighten?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'circle') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/circle?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'comrade') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/comrade?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'contrast') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/contrast?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'gay') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/gay?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'glass') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/glass?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'greyscale') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/greyscale?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'horny') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/horny?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'invert') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/invert?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'jail') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/jail?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'passed') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/passed?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 /*
 } else if (args[0] == 'photomania') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 let api = await fetch(`https://api.ouzen.xyz/photoeditor/photomanipulation?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
@@ -2922,19 +2927,19 @@ let x = await api.json()
 await bot.sendMessage(from, { image: { url: x.result.url_secury }}, {quoted: info})
 */
 } else if (args[0] == 'pixelate') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/pixelate?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'scale') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/2x?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } else if (args[0] == 'sepia') {
-if (!args[1] || args[2]) return reply(comandosGfxErroMensagem(prefix, cmd, args[0]))
+if (!args[1] || args[2]) return reply(comandosErroMensagem(prefix, cmd, args[0]))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
 const res = await fetch(`https://api.ouzen.xyz/photoeditor/sepia?url=${encodeURIComponent(util.format(image.url))}?v=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
@@ -2942,10 +2947,48 @@ await bot.sendMessage(from, { image: res}, {quoted: info})
 }
 } catch (e) {
 reply(apiErroMensagem())
-console.log(e)
 }
 }
 break
+case 'meme': case 'mememaker':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (!isQuotedImage) return reply(imagemErroMensagem())
+if (!texto) return reply(memeMakerArgsMensagem(prefix, cmd))
+if (!args[0] || !args[1]) return reply(memeMakerArgsMensagem(prefix, cmd))
+const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
+try {
+const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
+const image = await UploadFileUgu(img)
+bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
+txt = args.slice(1).join(' ')
+const res = await fetch(`https://api.lolhuman.xyz/api/memecreator?apikey=GataDios&text1=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txt)}&img=${encodeURIComponent(util.format(image.url))}`)
+await bot.sendMessage(from, { image: res}, {quoted: info})
+} catch (e) {
+reply(apiErroMensagem())
+}
+}
+break
+/*
+case 'test':
+if(isGroup) {
+bot.sendPresenceUpdate('composing', from)
+if (!isViewOnceMessageV2) return reply(imagemVideoGifErroMensagem())
+if (texto) return reply(stickerErroMensagem())
+const viewOnce = await generateWAMessage(sender, {
+forward: {
+key : {
+id : info.id,
+remoteJid : from
+},
+message : info.message.viewOnceMessageV2.message || {}
+}
+}, { logger : P() })
+const buffer = await downloadMediaMessage(viewOnce, "buffer", {}, { reuploadRequest : bot.updateMediaMessage, logger : P() })
+console.log(buffer)
+}
+break
+*/
 case 's': case 'sticker':// sticker grande
 if(isGroup) {
 bot.sendPresenceUpdate('composing', from)
@@ -2961,7 +3004,7 @@ if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
 if (texto) return reply(stickerErroMensagem())
 if (isQuotedImage) {
 const inputPath = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
-const outputPath = path.resolve(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
 ffmpeg(inputPath).outputOptions(["-y", "-vcodec libwebp", "-lossless 1", "-qscale 1", "-loop 0", "-an", "-vsync 0"]).videoFilters("scale='min(512,iw)':min'(512,ih)':force_original_aspect_ratio=decrease, pad=512:512:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"
 ).toFormat("webp").save(outputPath)
 .on("end", async (error) => {
@@ -3378,7 +3421,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3412,7 +3455,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3446,7 +3489,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3480,7 +3523,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3514,7 +3557,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3548,7 +3591,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3582,7 +3625,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3616,7 +3659,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3650,7 +3693,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3684,7 +3727,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3718,7 +3761,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3752,7 +3795,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
@@ -3786,7 +3829,7 @@ bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
-const opath = path.resolve(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
+const opath = path.join(audiotempfolder, `${Math.floor(Math.random() * 10000)}.mp3`)
 const emojisfx = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🆗', '✨', '🎧']
 const randomemojismsg = emojisfx[Math.floor(Math.random() * emojisfx.length)]
 const msgsfx = [enviandoFxMensagem1(), enviandoFxMensagem2(), enviandoFxMensagem3()]
