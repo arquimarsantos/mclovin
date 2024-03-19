@@ -8,7 +8,7 @@ const ff = require('fluent-ffmpeg')
 const path = require('path')
 const fs = require('fs')
 const prefix = "!"
-const nomedono = "arquimar 🌙"
+const nomedono = "GERENTE DO X... 🌙"
 const contatodono = "wa.me/557197108211"
 const numerodono = ["557197108211"]
 const nomebot = "☪ 𝙼𝚌𝙻𝚘𝚟𝚒𝚗 - 𝙱𝚘𝚝 シ ☪"
@@ -2580,6 +2580,48 @@ mediaQuoted.stickerMessage
 }
 return messageInfo.message[messageType];
 }
+
+/*
+const getCachedGroupMetadata = async (bot, jid) => {
+if (!isJidGroup(jid)) {
+return;
+}
+const data = await socketGroupsService.getGroupMetadata(jid);
+if (data) {
+return {
+participants: data.value.participants
+};
+}
+const metadata = await bot.groupMetadata(jid);
+const cachedData =
+await socketGroupsService.createOrUpdateGroupMetadata(jid, metadata);
+return {
+participants: cachedData?.participants
+};
+};
+
+const sendText = async (bot, from, text) => {
+try {
+if (!SEND_MESSAGES_ENABLED) return;
+const eph = isJidGroup(from) ? 86400 : undefined;
+const message = await bot.sendMessage(
+from,
+{ text },
+{
+cachedGroupMetadata: getCachedGroupMetadata,
+ephemeralExpiration: eph,
+},
+);
+if (!message) {
+console.log('Message not sent');
+return;
+}
+// await bot.readMessages([message.key]);
+} catch (e) {
+console.log(e)
+}
+};
+*/
 
 async function downloadImage(baileysMessage, fileName){
 const content = baileysMessage.message?.imageMessage || baileysMessage.message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage
