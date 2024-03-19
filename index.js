@@ -4589,7 +4589,7 @@ default:
 if(isCmd) return reply(comandoInexistenteErroMensagem())
 if (isGroup && isAntiLinkGrupo && budy.includes("https://chat.whatsapp.com/")) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminLinkGrupoErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminLinkGrupoErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 reply(linkGrupoDetectadoMensagem())
 bot.groupSettingUpdate(from, 'announcement')
@@ -4602,7 +4602,7 @@ bot.groupSettingUpdate(from, 'not_announcement')
 } else if (isGroup && isAntiLink) {
 if (budy.includes("https://") || budy.includes(".com")) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminLinkErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminLinkErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 reply(linkDetectadoMensagem())
 bot.groupSettingUpdate(from, 'announcement')
@@ -4616,7 +4616,7 @@ bot.groupSettingUpdate(from, 'not_announcement')
 }
 if (isGroup && isAntiPorno) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminPornoErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminPornoErroMensagem() })
 if(isImage) {
 let localArquivo = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 let content = await UploadFileUgu(localArquivo)
@@ -4631,7 +4631,7 @@ bot.groupParticipantsUpdate(from, [user], 'remove')
 }, 3000)
 }
 }).catch(function(err) {
-fs.unlinkSync(localArquivo)
+// fs.unlinkSync(localArquivo)
 console.log(err)
 })
 } else if(isSticker) {
@@ -4648,7 +4648,7 @@ bot.groupParticipantsUpdate(from, [user], 'remove')
 }, 3000)
 }
 }).catch(function(err) {
-fs.unlinkSync(localArquivo)
+// fs.unlinkSync(localArquivo)
 console.log(err)
 })
 }
@@ -4657,7 +4657,7 @@ console.log(err)
 if (isGroup && isAntiFoto) {
 if (isImage) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminFotoErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminFotoErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: [user] } })
 }
@@ -4666,7 +4666,7 @@ bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.i
 if (isGroup && isAntiVideo) {
 if (isVideo) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminVideoErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminVideoErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: [user] } })
 }
@@ -4675,7 +4675,7 @@ bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.i
 if (isGroup && isAntiAudio) {
 if (isAudio) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminAudioErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminAudioErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: [user] } })
 }
@@ -4684,7 +4684,7 @@ bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.i
 if (isGroup && isAntiSticker) {
 if (isSticker) {
 if (!isGroupAdmins) {
-if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminStickerErroMensagem() })
+// if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminStickerErroMensagem() })
 var user = `${sender.split("@")[0]}@s.whatsapp.net`
 bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: [user] } })
 }
