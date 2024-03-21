@@ -7,7 +7,7 @@
 */
 
 const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
-const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
+//const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
@@ -28,7 +28,7 @@ const addStickerMetaData = require("./src/lib/addStickerMetaData.js")
 const { translate } = require('@vitalets/google-translate-api')
 //const sightengine = require('sightengine')('1322141040', '9EWBYkeg9N8NiQNVAVa9FSpHysV5twTg')
 // const mongoURL = "mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority";
-const { MongoClient } = require("mongodb");
+//const { MongoClient } = require("mongodb");
 const { TelegraPh, UploadFileUgu } = require("./src/lib/uploader.js")
 const { 
 prefix,
@@ -378,13 +378,15 @@ return connect()
 }
 // AWS : mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority
 // GoogleCloud : mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority
-// const { state, saveCreds } = await useMultiFileAuthState("sessions");
-const { state, saveCreds } = await useMongoDBAuthState({		
-mongodbUri: 'mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority',		
+/*
+const { state, saveCreds } = await useMongoDBAuthState({
+mongodbUri: 'mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority',
 databaseName: 'mclovin',
 collectionName: 'creds',
-sessionId: 'client-01'	
+sessionId: 'client-01'
 })
+*/
+const { state, saveCreds } = await useMultiFileAuthState("sessions");
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const cfonts = require('cfonts')
 const bot = makeWASocket( {
