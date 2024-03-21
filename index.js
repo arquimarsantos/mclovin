@@ -7,7 +7,7 @@
 */
 
 const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
-// const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
+const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
@@ -26,9 +26,9 @@ const ytdl2 = require('./src/lib/ytdl2')
 const axios = require('axios')
 const addStickerMetaData = require("./src/lib/addStickerMetaData.js")
 const { translate } = require('@vitalets/google-translate-api')
-const sightengine = require('sightengine')('1322141040', '9EWBYkeg9N8NiQNVAVa9FSpHysV5twTg')
+//const sightengine = require('sightengine')('1322141040', '9EWBYkeg9N8NiQNVAVa9FSpHysV5twTg')
 // const mongoURL = "mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority";
-// const { MongoClient } = require("mongodb");
+const { MongoClient } = require("mongodb");
 const { TelegraPh, UploadFileUgu } = require("./src/lib/uploader.js")
 const { 
 prefix,
@@ -344,7 +344,7 @@ output: process.stdout,
 })
 const antilink = JSON.parse(fs.readFileSync('./src/antilink.json'))
 const antilinkgrupo = JSON.parse(fs.readFileSync('./src/antilinkgrupo.json'))
-const antiporno = JSON.parse(fs.readFileSync('./src/antiporno.json'))
+//const antiporno = JSON.parse(fs.readFileSync('./src/antiporno.json'))
 const antifoto = JSON.parse(fs.readFileSync('./src/antifoto.json'))
 const antivideo = JSON.parse(fs.readFileSync('./src/antivideo.json'))
 const antiaudio = JSON.parse(fs.readFileSync('./src/antiaudio.json'))
@@ -357,7 +357,7 @@ const linkgrupo = JSON.parse(fs.readFileSync('./src/linkgrupo.json'))
 const listanegra = JSON.parse(fs.readFileSync('./src/listanegra.json'))
 const noticias = JSON.parse(fs.readFileSync('./src/noticias.json'))
 var stickersearchactived = false
-var imgsearchactived = false
+//var imgsearchactived = false
 var instagramdlactived = false
 var igstoryactived = false
 var wallpaperactived = false
@@ -378,15 +378,13 @@ return connect()
 }
 // AWS : mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority
 // GoogleCloud : mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority
-/*
+// const { state, saveCreds } = await useMultiFileAuthState("sessions");
 const { state, saveCreds } = await useMongoDBAuthState({		
-mongodbUri: 'mongodb+srv://arquimar:HXXywMJcmSyBuqsC@bot.b9ozlk3.mongodb.net/?retryWrites=true&w=majority',		
+mongodbUri: 'mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority',		
 databaseName: 'mclovin',
 collectionName: 'creds',
 sessionId: 'client-01'	
 })
-*/
-const { state, saveCreds } = await useMultiFileAuthState("sessions");
 const question = (text) => new Promise((resolve) => rl.question(text, resolve));
 const cfonts = require('cfonts')
 const bot = makeWASocket( {
@@ -394,11 +392,12 @@ logger: P({ level: "silent" }),
 usePairingCode,
 mobile: false,
 browser: ["Ubuntu", "Chrome", "20.0.04"],
-defaultQueryTimeoutMs: undefined,
+defaultQueryTimeoutMs: 0,
 auth: {
 creds: state.creds,
 keys: makeCacheableSignalKeyStore(state.keys, P({ level: "fatal" }).child({ level: "fatal" })),
 },
+syncFullHistory: true,
 markOnlineOnConnect: true,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
@@ -407,6 +406,21 @@ const msg = await store.loadMessage(key.remoteJid, key.id)
 return msg?.message || undefined
 }
 })
+
+
+/*
+// makeInMemoryStore //
+getMessage: async key => {
+const msg = await store.loadMessage(key.remoteJid, key.id)
+return msg?.message || undefined
+}
+
+// sendCache //
+getMessage: async key => {
+const msg = await sendCache.get(`${key.remoteJid}_${key.id}`)
+return msg?.message || undefined
+}
+*/
 
 store.bind(bot.ev);
 
@@ -621,7 +635,7 @@ const groupAdmins = isGroup ? getGroupAdmins(groupMembers) : ''
 const isGroupAdmins = groupAdmins.includes(sender) || false
 const isAntiLink = isGroup ? antilink.includes(from) : false
 const isAntiLinkGrupo = isGroup ? antilinkgrupo.includes(from) : false
-const isAntiPorno = isGroup ? antiporno.includes(from) : false
+//const isAntiPorno = isGroup ? antiporno.includes(from) : false
 const isAntiFoto = isGroup ? antifoto.includes(from) : false
 const isAntiVideo = isGroup ? antivideo.includes(from) : false
 const isAntiAudio = isGroup ? antiaudio.includes(from) : false
@@ -648,7 +662,7 @@ const actions = new Actions(bot, info)
 switch(cmd) {
 case 'menu':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(menuErroMensagem())
 bot.sendMessage(from, { react: { text: '📚', key: info.key }})
 const menuimgs = [menuimagem1, menuimagem2, menuimagem3, menuimagem4, menuimagem5, menuimagem6, menuimagem7, menuimagem8, menuimagem9, menuimagem10, menuimagem11]
@@ -662,7 +676,7 @@ bot.sendMessage(from, templateMessage, { quoted: menuselo })
 break
 case 'etiquetar': case 'mencionar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (texto) return reply(marcarErroMensagem())
@@ -679,7 +693,7 @@ bot.sendMessage(from, { text: teks, mentions: groupMembers.map(a => a.id) }, { q
 break
 case 'adminlista':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (texto) return reply(adminListaErroMensagem())
 teks = `╭▻ *❗Admins del grupo❗*\n`
@@ -688,12 +702,11 @@ teks += `⏐▻  @${admon.split('@')[0]}\n`
 }
 teks +=`⏐▻ Total : ${groupAdmins.length}\n╰▻`
 bot.sendMessage(from, { text: teks, mentions: groupAdmins }, { quoted: selo })
-//sendText(bot, from, { text: teks, mentions: groupAdmins }, { quoted: selo })
 }
 break
 case 'ocultar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (!texto) return reply(tagErroMensagem())
@@ -702,8 +715,9 @@ bot.sendMessage(from, { text : texto ? texto : '' , mentions: groupMembers.map(r
 break
 case 'ocultar2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
+if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (!texto) return reply(tagErroMensagem())
 bot.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: [sender] } })
@@ -712,7 +726,7 @@ bot.sendMessage(from, { text : texto ? texto : '' , mentions: groupMembers.map(r
 break
 case 'ig': case 'instagram': case 'igstalk':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || args[1]) return reply(igArgsMensagem(prefix, cmd))
 try {
 const emojis = ['☑', '✔', '👥']
@@ -782,7 +796,7 @@ reply(apiErroMensagem())
 break
 case 'tiktokdl': case 'ttkdl':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto || !isUrl(texto)) return reply(tiktokDownloadArgsMensagem(prefix, cmd))
 if (!isTikTokUrl(texto)) return reply(linkTikTokInvalidoErroMensagem())
 if (args[1]) return reply(tiktokDownloadArgsMensagem(prefix, cmd))
@@ -818,7 +832,7 @@ reply(apiErroMensagem())
 break
 case 'instagramdl': case 'instadl': case 'igdl':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto || !isUrl(texto)) return reply(igDownloadArgsMensagem(prefix, cmd))
 if (!isInstagramUrl(texto)) return reply(linkInstaInvalidoErroMensagem())
 if (args[1]) return reply(igDownloadArgsMensagem())
@@ -860,7 +874,7 @@ instagramdlactived = false
 break
 case 'igstory':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || args[1]) return reply(igStoryArgsMensagem(prefix, cmd))
 const emojis = ['✅', '💙', '✔', '🆗', '☑', '💜']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
@@ -912,7 +926,7 @@ igstoryactived = false
 break
 case 'w': case 'wallpaper':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(wallpaperArgsMensagem(prefix, cmd))
 const emojis = ['✅', '✔', '☑', '💜', '💙']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
@@ -945,7 +959,7 @@ wallpaperactived = false
 break
 case 'p': case 'pimg': case 'pinterest':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(pinterestArgsMensagem(prefix, cmd))
 const emojis = ['✅', '✔', '☑', '💜']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
@@ -978,7 +992,7 @@ pinterestactived = false
 break
 case 'pinterestdl':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto || !isUrl(texto)) return reply(pinterestDownloadArgsMensagem(prefix, cmd))
 if (!isPinterestUrl(texto)) return reply(linkPinterestInvalidoErroMensagem())
 if (args[1]) return reply(pinterestDownloadArgsMensagem(prefix, cmd))
@@ -1001,7 +1015,7 @@ reply(apiErroMensagem())
 break
 case 'sc': case 'soundcloud':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto || !isUrl(texto)) return reply(soundcloudDownloadArgsMensagem(prefix, cmd))
 if (!isSoundCloudUrl(texto)) return reply(linkSoundcloudInvalidoErroMensagem())
 if (args[1]) return reply(soundcloudDownloadArgsMensagem(prefix, cmd))
@@ -1027,7 +1041,7 @@ reply(apiErroMensagem())
 break
 case 'scbuscar': case 'soundcloudbuscar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(scBuscarArgsMensagem(prefix, cmd))
 const emojis = ['🧡', '🟠', '🟧', '🆗']
 const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
@@ -1068,7 +1082,7 @@ scbuscaractived = false
 break
 case 'stickerbuscar': case 'stickersearch': case 'sbuscar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(stickerBuscarArgsMensagem(prefix, cmd))
 try {
 const sleepstksearch = (ms) => {
@@ -1179,7 +1193,7 @@ break
 /*
 case 'imgbuscar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(imgBuscarArgsMensagem(prefix, cmd))
 try {
 const sleepimgsearch = (ms) => {
@@ -1219,7 +1233,7 @@ break
 */
 case 'randomprofile': case 'randompfp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(randompfpArgsMensagem(prefix, cmd))
 try {
 const sleeprprofile = (ms) => {
@@ -1249,7 +1263,7 @@ randompfpactived = false
 break
 case 'randomaesthetic': case 'aesthetic':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(randomaestheticArgsMensagem(prefix, cmd))
 try {
 const sleepaesthetic = (ms) => {
@@ -1279,7 +1293,7 @@ randomaestheticactived = false
 break
 case 'randomwlp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(randomwlpArgsMensagem(prefix, cmd))
 try {
 const sleeprandomwlp = (ms) => {
@@ -1309,7 +1323,7 @@ randomwlpactived = false
 break
 case 'randomfanart': case 'fanart':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(randomfanartArgsMensagem(prefix, cmd))
 try {
 const sleepfanart = (ms) => {
@@ -1340,7 +1354,7 @@ break
 /*
 case 'randomanime': case 'anime':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(randomanimeArgsMensagem(prefix, cmd))
 try {
 const sleepanime = (ms) => {
@@ -1370,7 +1384,7 @@ randomanimeactived = false
 break
 case 'couples':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply('')
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/couples?apikey=zenzkey_91737a4ecd09')
@@ -1390,7 +1404,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'husbu':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/husbu?apikey=zenzkey_91737a4ecd09')
@@ -1402,7 +1416,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'neko':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/neko?apikey=zenzkey_91737a4ecd09')
@@ -1414,7 +1428,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'waifu':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/waifu?apikey=zenzkey_91737a4ecd09')
@@ -1426,7 +1440,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'calliope':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/calliope?apikey=zenzkey_91737a4ecd09')
@@ -1438,7 +1452,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'kitagawa':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/kitagawa?apikey=zenzkey_91737a4ecd09')
@@ -1450,7 +1464,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'maid':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/maid?apikey=zenzkey_91737a4ecd09')
@@ -1462,7 +1476,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'megumin':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/megumin?apikey=zenzkey_91737a4ecd09')
@@ -1474,7 +1488,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'oppai':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/oppai?apikey=zenzkey_91737a4ecd09')
@@ -1486,7 +1500,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'raiden':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/raiden?apikey=zenzkey_91737a4ecd09')
@@ -1498,7 +1512,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'selfies':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/selfies?apikey=zenzkey_91737a4ecd09')
@@ -1510,7 +1524,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'shinobu':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/shinobu?apikey=zenzkey_91737a4ecd09')
@@ -1522,7 +1536,7 @@ reply('talvez o usuário não tenha a conta privada!')
 break
 case 'uniform':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(`𝙄𝙉𝙂𝙍𝙀𝙎𝙀 UN NOMBRE`)
 try {
 let apiurl = await fetch('https://api.ouzen.xyz/randomanime/uniform?apikey=zenzkey_91737a4ecd09')
@@ -1535,7 +1549,7 @@ break
 */
 case 'ephoto':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(ephotoErroMensagem(prefix, cmd))
 reply(`───┤『🏞️』𝑬𝑷𝑯𝑶𝑻𝑶『🖌️』├───
 
@@ -1591,7 +1605,7 @@ reply(`───┤『🏞️』𝑬𝑷𝑯𝑶𝑻𝑶『🖌️』├──�
 break
 case 'textpro':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(textproErroMensagem(prefix, cmd))
 reply(`───┤『🌌』𝑻𝑬𝑿𝑻𝑷𝑹𝑶『🪄』├───
 
@@ -1635,7 +1649,7 @@ reply(`───┤『🌌』𝑻𝑬𝑿𝑻𝑷𝑹𝑶『🪄』├───
 break
 case 'audiofx':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(afxErroMensagem(prefix, cmd))
 reply(`───┤『🔊』𝑨𝑼𝑫𝑰𝑶𝑭𝑿『🧞‍♀️』├───
 
@@ -1659,7 +1673,7 @@ break
 // ephoto //
 case 'american':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1673,7 +1687,7 @@ reply(apiErroMensagem())
 break
 case 'anonymous':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1687,7 +1701,7 @@ reply(apiErroMensagem())
 break
 case 'aov':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1701,7 +1715,7 @@ reply(apiErroMensagem())
 break
 case 'arrow':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1715,7 +1729,7 @@ reply(apiErroMensagem())
 break
 case 'arrow2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1729,7 +1743,7 @@ reply(apiErroMensagem())
 break
 case 'blackpink':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1743,7 +1757,7 @@ reply(apiErroMensagem())
 break
 case 'blueneon':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1757,7 +1771,7 @@ reply(apiErroMensagem())
 break
 case 'buoys':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1771,7 +1785,7 @@ reply(apiErroMensagem())
 break
 case 'cake':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1785,7 +1799,7 @@ reply(apiErroMensagem())
 break
 case 'caper':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1799,7 +1813,7 @@ reply(apiErroMensagem())
 break
 case 'cloth':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1813,7 +1827,7 @@ reply(apiErroMensagem())
 break
 case 'cloud':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1827,7 +1841,7 @@ reply(apiErroMensagem())
 break
 case 'coverpubg':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1841,7 +1855,7 @@ reply(apiErroMensagem())
 break
 case 'crank':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1855,7 +1869,7 @@ reply(apiErroMensagem())
 break
 case 'dragonfire':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1869,7 +1883,7 @@ reply(apiErroMensagem())
 break
 case 'eraser':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1883,7 +1897,7 @@ reply(apiErroMensagem())
 break
 case 'foggy':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1897,7 +1911,7 @@ reply(apiErroMensagem())
 break
 case 'glasses':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1911,7 +1925,7 @@ reply(apiErroMensagem())
 break
 case 'graffiti':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1925,7 +1939,7 @@ reply(apiErroMensagem())
 break
 case 'greenbrush':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1939,7 +1953,7 @@ reply(apiErroMensagem())
 break
 case 'hallowen':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1953,7 +1967,7 @@ reply(apiErroMensagem())
 break
 case 'heated':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1967,7 +1981,7 @@ reply(apiErroMensagem())
 break
 case 'horror':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1981,7 +1995,7 @@ reply(apiErroMensagem())
 break
 case 'incandescent':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -1995,7 +2009,7 @@ reply(apiErroMensagem())
 break
 case 'juventus':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos3ImgEditorErroMensagem(prefix, cmd))
 if (args[2]) return reply(comandos3ImgEditorErroMensagem(prefix, cmd))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
@@ -2011,7 +2025,7 @@ reply(apiErroMensagem())
 break
 case 'leafgraphy':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2025,7 +2039,7 @@ reply(apiErroMensagem())
 break
 case 'letters':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2039,7 +2053,7 @@ reply(apiErroMensagem())
 break
 case 'metals':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2053,7 +2067,7 @@ reply(apiErroMensagem())
 break
 case 'ml':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2067,7 +2081,7 @@ reply(apiErroMensagem())
 break
 case 'neonblue':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2081,7 +2095,7 @@ reply(apiErroMensagem())
 break
 case 'neonbp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2095,7 +2109,7 @@ reply(apiErroMensagem())
 break
 case 'nightstars':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2109,7 +2123,7 @@ reply(apiErroMensagem())
 break
 case 'pencil':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2123,7 +2137,7 @@ reply(apiErroMensagem())
 break
 case 'pig':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2137,7 +2151,7 @@ reply(apiErroMensagem())
 break
 case 'pubgavatar':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2151,7 +2165,7 @@ reply(apiErroMensagem())
 break
 case 'puppy':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2165,7 +2179,7 @@ reply(apiErroMensagem())
 break
 case 'quotestatus':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2179,7 +2193,7 @@ reply(apiErroMensagem())
 break
 case 'scholes':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos3ImgEditorErroMensagem(prefix, cmd))
 if (args[2]) return reply(comandos3ImgEditorErroMensagem(prefix, cmd))
 if (isNaN(args[1])) return reply(apenasNumerosErroMensagem())
@@ -2195,7 +2209,7 @@ reply(apiErroMensagem())
 break
 case 'socialbutton':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2209,7 +2223,7 @@ reply(apiErroMensagem())
 break
 case 'sunlight':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2223,7 +2237,7 @@ reply(apiErroMensagem())
 break
 case 'television':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2237,7 +2251,7 @@ reply(apiErroMensagem())
 break
 case 'typography':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2251,7 +2265,7 @@ reply(apiErroMensagem())
 break
 case 'typography2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2265,7 +2279,7 @@ reply(apiErroMensagem())
 break
 case 'warface':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2279,7 +2293,7 @@ reply(apiErroMensagem())
 break
 case 'water':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2293,7 +2307,7 @@ reply(apiErroMensagem())
 break
 case 'wood':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2307,7 +2321,7 @@ reply(apiErroMensagem())
 break
 case 'writestatus':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2321,7 +2335,7 @@ reply(apiErroMensagem())
 break
 case 'yasuologo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2336,7 +2350,7 @@ break
 // textpro //
 case '3dchristmas':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2350,7 +2364,7 @@ reply(apiErroMensagem())
 break
 case 'crackedstone':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2364,7 +2378,7 @@ reply(apiErroMensagem())
 break
 case '3ddeepsea':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2378,7 +2392,7 @@ reply(apiErroMensagem())
 break
 case '3dgradient':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2392,7 +2406,7 @@ reply(apiErroMensagem())
 break
 case '3dneonlight':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2406,7 +2420,7 @@ reply(apiErroMensagem())
 break
 case '3drainbow':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2420,7 +2434,7 @@ reply(apiErroMensagem())
 break
 case '3dscifi':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2434,7 +2448,7 @@ reply(apiErroMensagem())
 break
 case '3dwaterpipe':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2448,7 +2462,7 @@ reply(apiErroMensagem())
 break
 case 'americanflag':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2462,7 +2476,7 @@ reply(apiErroMensagem())
 break
 case 'berry':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2476,7 +2490,7 @@ reply(apiErroMensagem())
 break
 case 'blackpink2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2490,7 +2504,7 @@ reply(apiErroMensagem())
 break
 case 'bluecircuit':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2504,7 +2518,7 @@ reply(apiErroMensagem())
 break
 case 'christmas':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2518,7 +2532,7 @@ reply(apiErroMensagem())
 break
 case 'dropwater':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2532,7 +2546,7 @@ reply(apiErroMensagem())
 break
 case 'fiction':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2546,7 +2560,7 @@ reply(apiErroMensagem())
 break
 case 'firework':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2560,7 +2574,7 @@ reply(apiErroMensagem())
 break
 case 'foggywindows':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2574,7 +2588,7 @@ reply(apiErroMensagem())
 break
 case 'glitch':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2588,7 +2602,7 @@ reply(apiErroMensagem())
 break
 case 'gluetext':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2602,7 +2616,7 @@ reply(apiErroMensagem())
 break
 case 'greenhorror':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2616,7 +2630,7 @@ reply(apiErroMensagem())
 break
 case 'halloween':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2630,7 +2644,7 @@ reply(apiErroMensagem())
 break
 case 'harrypotter':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2644,7 +2658,7 @@ reply(apiErroMensagem())
 break
 case 'impressiveglitch':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2658,7 +2672,7 @@ reply(apiErroMensagem())
 break
 case 'magma':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2672,7 +2686,7 @@ reply(apiErroMensagem())
 break
 case 'marvel':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2686,7 +2700,7 @@ reply(apiErroMensagem())
 break
 case 'matrix':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2700,7 +2714,7 @@ reply(apiErroMensagem())
 break
 case 'metallic':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2714,7 +2728,7 @@ reply(apiErroMensagem())
 break
 case 'natural':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2728,7 +2742,7 @@ reply(apiErroMensagem())
 break
 case 'neondevil':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2742,7 +2756,7 @@ reply(apiErroMensagem())
 break
 case 'pornhub':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2756,7 +2770,7 @@ reply(apiErroMensagem())
 break
 case 'sketch':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2770,7 +2784,7 @@ reply(apiErroMensagem())
 break
 case 'space':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2784,7 +2798,7 @@ reply(apiErroMensagem())
 break
 case 'thunder':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2798,7 +2812,7 @@ reply(apiErroMensagem())
 break
 case 'transformer':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(comandosImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2812,7 +2826,7 @@ reply(apiErroMensagem())
 break
 case 'wolfgalaxy':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2826,7 +2840,7 @@ reply(apiErroMensagem())
 break
 case 'wolflogo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cmd))
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
@@ -2841,7 +2855,7 @@ break
 // gfx //
 case 'gfx':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(gfxArgsMensagem())
 if (!isQuotedImage) return reply(imagemErroMensagem())
 if (args[0] != 'blur' && args[0] != 'brighten' && args[0] != 'circle' && args[0] != 'comrade' && args[0] != 'contrast' && args[0] != 'gay' && args[0] != 'glass' && args[0] != 'greyscale' && args[0] != 'horny' && args[0] != 'invert' && args[0] != 'jail' && args[0] != 'passed' && args[0] != 'pixelate' && args[0] != 'scale' && args[0] != 'sepia') return reply(gfxErroMensagem(args[0]))
@@ -2956,7 +2970,7 @@ reply(apiErroMensagem())
 break
 case 'meme': case 'mememaker':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage) return reply(imagemErroMensagem())
 if (!texto) return reply(memeMakerArgsMensagem(prefix, cmd))
 if (!args[0] || !args[1]) return reply(memeMakerArgsMensagem(prefix, cmd))
@@ -2975,7 +2989,7 @@ reply(apiErroMensagem())
 break
 case 'meme2': case 'mememaker2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage) return reply(imagemErroMensagem())
 if (!texto) return reply(memeMakerArgsMensagem(prefix, cmd))
 if (!args[0] || !args[1]) return reply(memeMakerArgsMensagem(prefix, cmd))
@@ -2995,7 +3009,7 @@ break
 /*
 case 'test':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isViewOnceMessageV2) return reply(imagemVideoGifErroMensagem())
 if (texto) return reply(stickerErroMensagem())
 const viewOnce = await generateWAMessage(sender, {
@@ -3012,9 +3026,15 @@ console.log(buffer)
 }
 break
 */
+case 'amovc':
+if(isGroup) {
+// bot.sendPresenceUpdate('composing', from)
+await sendText('testando kkkk', { quoted: info })
+}
+break
 case 's': case 'sticker':// sticker grande
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
 if (texto) return reply(stickerErroMensagem())
 await actions.sticker()
@@ -3022,7 +3042,7 @@ await actions.sticker()
 break
 case 'ss': // sticker pequeno
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
 if (texto) return reply(stickerErroMensagem())
 if (isQuotedImage) {
@@ -3058,7 +3078,7 @@ await actions.sticker()
 break
 case 'emojimix':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!args[0] || args[1]) return reply(emojiMixArgsMensagem())
 try {
 let [emoji1, emoji2] = texto.split`+`
@@ -3074,7 +3094,7 @@ reply(emojiMixErroMensagem())
 break
 case 'toimg': case 'toimage':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedSticker) return reply(stickerImagemErroMensagem())
 if (mediaMessage.isAnimated) return reply(stickerAnimadoErroMensagem())
 if (texto) return reply(toImgErroMensagem())
@@ -3083,7 +3103,7 @@ await actions.sticker()
 break
 case 'togif':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedSticker) return reply(stickerGifErroMensagem())
 if (!mediaMessage.isAnimated) return reply(stickerNaoAnimadoErroMensagem())
 if (texto) return reply(toGifErroMensagem())
@@ -3092,7 +3112,7 @@ await actions.sticker()
 break
 case 'todoc':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo && !isQuotedAudio && !isQuotedSticker) return reply(imagemVideoAudioStickerErroMensagem())
 if (texto) return reply(toDocErroMensagem(prefix, cmd))
 const emojis = ['☑', '✔', '🆗', '📁']
@@ -3132,7 +3152,7 @@ break
 /*
 case 'toanime':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage) return reply(imagemErroMensagem())
 if (texto) return reply(toAnimeErroMensagem(prefix, cmd))
 const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3156,7 +3176,7 @@ break
 */
 case 'sim': case 'simi': case 'simsimi':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(simiArgsMensagem(prefix, cmd))
 const options = {
 method: 'POST',
@@ -3174,7 +3194,7 @@ reply(simiErroMensagem())
 break
 case 'pfp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(profileArgsMensagem(prefix, cmd))
 try {
 let usr = info.mentionedUser[0] ? info.mentionedUser[0] : info.quoted ? info.key.participant : texto.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -3187,7 +3207,7 @@ bot.sendMessage(from, { image: { url: fotouser }}, { quoted: info })
 break
 case 'attp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(attpErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/attp?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3200,7 +3220,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'attp2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(attp2ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/attp2?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3213,7 +3233,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttpErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3226,7 +3246,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttp2ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp2?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3239,7 +3259,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp3':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttp3ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp3?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3252,7 +3272,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp4':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttp4ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp4?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3265,7 +3285,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp5':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttp5ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp5?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3278,7 +3298,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'ttp6':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(ttp6ErroMensagem())
 let buffer = await (await fetch(`https://api.lolhuman.xyz/api/ttp6?apikey=GataDios&text=${encodeURI(texto)}`)).buffer()
 const mediaWithMetaDataPath = await addStickerMetaData(buffer, createStickerMetaData(pushname))
@@ -3291,7 +3311,7 @@ fs.unlinkSync(mediaWithMetaDataPath)
 break
 case 'crearnoticia':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isDono) return reply(donoErroMensagem())
 if (!texto) return reply(criarNoticiaErroMensagem())
 if (isNoticias) return reply(noticiaJaCriadaErroMensagem())
@@ -3306,7 +3326,7 @@ Nuevos comandos : *!attp* || *!attp2* & *!ttp* || *!ttp2* (16/12/2023 - 13:00) b
 */
 case 'eliminarnoticia':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isDono) return reply(donoErroMensagem())
 if (!isNoticias) return reply(noticiaNaoCriadaErroMensagem())
 noticias.criada = false
@@ -3317,7 +3337,7 @@ reply(noticiaRemovidaMensagem())
 break
 case 'noticiasbot':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(noticiasErroMensagem())
 if (isNoticias) {
 teks = '╭▻ 💌 *Noticias del Bot* 💌\n'
@@ -3331,7 +3351,7 @@ reply(nenhumaNoticiaErroMensagem())
 break
 case 'bot':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(botErroMensagem())
 const timestampe = speed();
 const latensie = speed() - timestampe
@@ -3350,14 +3370,14 @@ reply(upTxt)
 break
 case 'voz':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(vozArgsMensagem())
 if (args[0] != 'en' && args[0] != 'pt' && args[0] != 'ja' && args[0] != 'es' && args[0] != 'it' && args[0] != 'ru' && args[0] != 'ko' && args[0] != 'sv' && args[0] != 'ar' && args[0] != 'fr' && args[0] != 'de' && args[0] != 'id') return reply(selecionarIdiomaErroMensagem())
 usuarioTexto = body.slice(8).trim()
 if (!usuarioTexto) return reply(vozErroMensagem())
 if (usuarioTexto.length > 1000) return reply(vozCaracErroMensagem())
 try {
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 var respostaAudio = await textoParaVoz(args[0], usuarioTexto)
 if (args[0] == 'en') {
 bot.sendMessage(from, { react: { text: '🇺🇲', key: info.key }})
@@ -3397,7 +3417,7 @@ reply(vozErroMensagem())
 break
 case 'traducir': case 'translate':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(traduzirArgsMensagem(prefix, cmd))
 if (args[0] != 'af' && args[0] != 'sq' && args[0] != 'am' && args[0] != 'ar' && args[0] != 'hy' && args[0] != 'as' && args[0] != 'ay' && args[0] != 'az' && args[0] != 'bm' && args[0] != 'eu' && args[0] != 'be' && args[0] != 'bn' && args[0] != 'bho' && args[0] != 'bs' && args[0] != 'bg' && args[0] != 'ca' && args[0] != 'ceb' && args[0] != 'zh-CN' && args[0] != 'zh-Hant' && args[0] != 'co' && args[0] != 'hr' && args[0] != 'cs' && args[0] != 'da' && args[0] != 'dv' && args[0] != 'doi' && args[0] != 'nl' && args[0] != 'en' && args[0] != 'es' && args[0] != 'eo' && args[0] != 'et' && args[0] != 'ee' && args[0] != 'fil' && args[0] != 'fi' && args[0] != 'fr' && args[0] != 'fy' && args[0] != 'gl' && args[0] != 'ka' && args[0] != 'de' && args[0] != 'el' && args[0] != 'gn' && args[0] != 'gu' && args[0] != 'ht' && args[0] != 'ha' && args[0] != 'haw' && args[0] != 'he' && args[0] != 'hi' && args[0] != 'hmn' && args[0] != 'hu' && args[0] != 'is' && args[0] != 'ig' && args[0] != 'il' && args[0] != 'id' && args[0] != 'ga' && args[0] != 'it' && args[0] != 'ja' && args[0] != 'ja' && args[0] != 'kn' && args[0] != 'kk' && args[0] != 'km' && args[0] != 'rw' && args[0] != 'gom' && args[0] != 'ko' && args[0] != 'kri' && args[0] != 'ku' && args[0] != 'ckb' && args[0] != 'ky' && args[0] != 'lo' && args[0] != 'la' && args[0] != 'lv' && args[0] != 'ln' && args[0] != 'lt' && args[0] != 'lg' && args[0] != 'lb' && args[0] != 'mk' && args[0] != 'mai' && args[0] != 'mg' && args[0] != 'ms' && args[0] != 'ml' && args[0] != 'mt' && args[0] != 'mi' && args[0] != 'mr' && args[0] != 'mni-Mtei' && args[0] != 'lus' && args[0] != 'mn' && args[0] != 'my' && args[0] != 'ne' && args[0] != 'no' && args[0] != 'ny' && args[0] != 'or' && args[0] != 'om' && args[0] != 'ps' && args[0] != 'fa' && args[0] != 'pl' && args[0] != 'pt' && args[0] != 'pa' && args[0] != 'qu' && args[0] != 'ro' && args[0] != 'ru' && args[0] != 'sm' && args[0] != 'sa' && args[0] != 'gd' && args[0] != 'nso' && args[0] != 'sr' && args[0] != 'st' && args[0] != 'sn' && args[0] != 'sd' && args[0] != 'si' && args[0] != 'sk' && args[0] != 'sl' && args[0] != 'so' && args[0] != 'su' && args[0] != 'sw' && args[0] != 'sv' && args[0] != 'tl' && args[0] != 'tg' && args[0] != 'ta' && args[0] != 'tt' && args[0] != 'te' && args[0] != 'th' && args[0] != 'ti' && args[0] != 'ts' && args[0] != 'tr' && args[0] != 'tk' && args[0] != 'ak' && args[0] != 'uk' && args[0] != 'ur' && args[0] != 'ug' && args[0] != 'uz' && args[0] != 'vi' && args[0] != 'cy' && args[0] != 'xh' && args[0] != 'yi' && args[0] != 'yo' && args[0] != 'zu') return reply(selecionarIdiomaTradutorErroMensagem())
 if (!args[1]) return reply(traduzirArgsMensagem(prefix, cmd))
@@ -3420,7 +3440,7 @@ reply(traduzirErroMensagem())
 break
 case 'frase':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (isNaN(args[0])) return reply(fraseArgsMensagem(prefix, cmd))
 if (args[0] < 1 || args[0] > 99) return reply(fraseErroMensagem())
 if (args[1]) return reply(fraseArgsMensagem(prefix, cmd))
@@ -3440,7 +3460,7 @@ ${translation_en}
 break
 case 'bass': case 'volumen':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3458,7 +3478,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3474,7 +3494,7 @@ throw new Error(error)
 break
 case 'reverse':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3492,7 +3512,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3508,7 +3528,7 @@ throw new Error(error)
 break
 case 'slow': case 'slowed':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3526,7 +3546,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3542,7 +3562,7 @@ throw new Error(error)
 break
 case 'slow2': case 'slowed2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3560,7 +3580,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3576,7 +3596,7 @@ throw new Error(error)
 break
 case 'speed': case 'speedup':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3594,7 +3614,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3610,7 +3630,7 @@ throw new Error(error)
 break
 case 'alto':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3628,7 +3648,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3644,7 +3664,7 @@ throw new Error(error)
 break
 case 'robot':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3662,7 +3682,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3678,7 +3698,7 @@ throw new Error(error)
 break
 case 'blown':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3696,7 +3716,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3712,7 +3732,7 @@ throw new Error(error)
 break
 case 'deep':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3730,7 +3750,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3746,7 +3766,7 @@ throw new Error(error)
 break
 case 'earrape':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3764,7 +3784,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3780,7 +3800,7 @@ throw new Error(error)
 break
 case 'fat':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3798,7 +3818,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3814,7 +3834,7 @@ throw new Error(error)
 break
 case '2x':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3832,7 +3852,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3848,7 +3868,7 @@ throw new Error(error)
 break
 case 'tupai':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!isQuotedAudio) return reply(audioErroMensagem())
 if (texto) return reply(audioFxErroMensagem(prefix, cmd))
 const ipath = await downloadAudio(info, `${Math.floor(Math.random() * 10000)}`)
@@ -3866,7 +3886,7 @@ fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
 throw new Error(error)
 }
-bot.sendPresenceUpdate('recording', from)
+// bot.sendPresenceUpdate('recording', from)
 await bot.sendMessage(from, { audio: fs.readFileSync(opath), mimetype: 'audio/mpeg', ptt: true}, { quoted: info })
 fs.unlinkSync(ipath)
 fs.unlinkSync(opath)
@@ -3882,7 +3902,7 @@ throw new Error(error)
 break
 case 'play': case 'song': case 'cancion': case 'musica': case 'msc': {
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(musicaErroMensagem(prefix, cmd))
 if (isUrl(texto)) return reply(linkNaoPermitidoErroMensagem())
 const emojis = ['🎶', '✅', '🎵', '💙', '🔊', '✔', '☑', '🔉', '✨', '🎧']
@@ -3917,7 +3937,7 @@ await fs.unlinkSync(pl.path)
 break
 case "ytmp3": case "ytaudio":
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (args.length < 1 || !isUrl(texto) || !ytdl2.isYTUrl(texto)) return reply(linkMP3ErroMensagem())
 if (args[1]) return reply(linkMP3ErroMensagem())
 reply(enviandoMP3Mensagem())
@@ -3930,7 +3950,7 @@ await fs.unlinkSync(audio.path)
 break
 case 'ytmp4': case 'ytvideo': {
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (args.length < 1 || !isUrl(texto) || !ytdl2.isYTUrl(texto)) return reply(linkVideoErroMensagem())
 if (args[1]) return reply(linkVideoErroMensagem())
 bot.sendMessage(from, { react: { text: `🎞️`, key: info.key }})
@@ -3951,7 +3971,7 @@ caption: ytc,
 break
 case 'ytdoc':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (args.length < 1 || !isUrl(texto) || !ytdl2.isYTUrl(texto)) return reply(linkDocErroMensagem())
 if (args[1]) return reply(linkDocErroMensagem())
 bot.sendMessage(from, { react: { text: `📁`, key: info.key }})
@@ -3968,7 +3988,7 @@ break
 case 'listagrupos':
 try {
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(listaGruposErroMensagem())
 if (hasGroupOwner && isGroupOwner) {
 let getGroups = await bot.groupFetchAllParticipating()
@@ -4011,7 +4031,7 @@ console.log(e)
 break
 case 'nombregrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (!texto) return reply(nomeErroMensagem())
@@ -4020,7 +4040,7 @@ bot.groupUpdateSubject(from, texto)
 break
 case 'descgrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (!texto) return reply(descErroMensagem())
@@ -4047,7 +4067,7 @@ bot.groupSettingUpdate(from, 'not_announcement')
 break
 case 'cerrargrupotmp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4076,7 +4096,7 @@ bot.groupSettingUpdate(from, 'announcement')
 break
 case 'abrirgrupotmp':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4105,7 +4125,7 @@ bot.groupSettingUpdate(from, 'not_announcement')
 break
 case 'permitireditargrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4116,7 +4136,7 @@ bot.sendMessage(from, { text: grupoPermitirEditarMensagem() })
 break
 case 'denegareditargrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4127,7 +4147,7 @@ bot.sendMessage(from, { text: grupoNegarEditarMensagem() })
 break
 case 'linkgrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4149,7 +4169,7 @@ reply(antiArgsErroMensagem())
 break
 case 'link':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (texto) return reply(linkErroMensagem())
@@ -4166,7 +4186,7 @@ reply(linkMensagem(link))
 break
 case 'redefinir':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4182,7 +4202,7 @@ reply(linkNaoRedefiniuErroMensagem())
 break
 case 'chatgpt': case 'gpt':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (!texto) return reply(chatGPTErroMensagem())
 try {
 const apiUrl = await fetch(`https://ultimetron.guruapi.tech/gpt4?prompt=${encodeURIComponent(q)}`)
@@ -4201,7 +4221,7 @@ break
 case 'promover':
 try {
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4231,7 +4251,7 @@ break
 case 'sacaradmin':
 try {
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4287,7 +4307,7 @@ console.log(erro)
 break
 case 'addlistanegra':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4312,7 +4332,7 @@ bot.sendMessage(from, { text: addListaNegraMensagem(listng)})
 break
 case 'sacarlistanegra':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4329,7 +4349,7 @@ bot.sendMessage(from, { text: removerListaNegraMensagem(texto)})
 break
 case 'listanegra':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
 if (texto) return reply(listaNegraErroMensagem())
@@ -4344,7 +4364,7 @@ reply(teks)
 break
 case 'bienvenido':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4370,7 +4390,7 @@ reply(bemvindoDoisEstaAtivoErroMensagem())
 break
 case 'bienvenido2':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4396,7 +4416,7 @@ reply(bemvindoEstaAtivoErroMensagem())
 break
 case 'adminlogs':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4418,7 +4438,7 @@ reply(antiArgsErroMensagem())
 break
 case 'antilink':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4444,7 +4464,7 @@ reply(antilinkGrupoEstaAtivoErroMensagem())
 break
 case 'antilinkgrupo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4468,9 +4488,10 @@ reply(antilinkEstaAtivoErroMensagem())
 }
 }
 break
+/*
 case 'antiporno':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4490,9 +4511,10 @@ reply(antiArgsErroMensagem())
 }
 }
 break
+*/
 case 'antifoto':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4514,7 +4536,7 @@ reply(antiArgsErroMensagem())
 break
 case 'antivideo':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4536,7 +4558,7 @@ reply(antiArgsErroMensagem())
 break
 case 'antiaudio':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4558,7 +4580,7 @@ reply(antiArgsErroMensagem())
 break
 case 'antisticker':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 // if (!isGroup) return reply(grupoErroMensagem())
 if (!isBotAdmins) return reply(botAdminErroMensagem())
 if (!isGroupAdmins) return reply(adminErroMensagem())
@@ -4580,7 +4602,7 @@ reply(antiArgsErroMensagem())
 break
 case 'horarios':
 if(isGroup) {
-bot.sendPresenceUpdate('composing', from)
+// bot.sendPresenceUpdate('composing', from)
 if (texto) return reply(horariosErroMensagem())
 horariosMensagem(bot, from, liveselo)
 }
@@ -4614,6 +4636,7 @@ bot.groupSettingUpdate(from, 'not_announcement')
 }
 }
 }
+/*
 if (isGroup && isAntiPorno) {
 if (!isGroupAdmins) {
 // if (!isBotAdmins) return bot.sendMessage(from, { text: botAdminPornoErroMensagem() })
@@ -4631,7 +4654,7 @@ bot.groupParticipantsUpdate(from, [user], 'remove')
 }, 3000)
 }
 }).catch(function(err) {
-// fs.unlinkSync(localArquivo)
+fs.unlinkSync(localArquivo)
 console.log(err)
 })
 } else if(isSticker) {
@@ -4648,12 +4671,13 @@ bot.groupParticipantsUpdate(from, [user], 'remove')
 }, 3000)
 }
 }).catch(function(err) {
-// fs.unlinkSync(localArquivo)
+fs.unlinkSync(localArquivo)
 console.log(err)
 })
 }
 }
 }
+*/
 if (isGroup && isAntiFoto) {
 if (isImage) {
 if (!isGroupAdmins) {
