@@ -42,7 +42,7 @@ return `
       ╰━━🦋•ೋೋ• 🦋━━╯
 
 ╭━━『🧛🏻‍♂️』ℂℝ𝔼𝔸𝔻𝕆ℝ『🧛🏻‍♂️』
-│❒ Dueño : ${nomedono}
+│❒ Dueño: ${nomedono}
 │❒ Contacto TG: @arqui_szz
 ╰━━『🇧🇷』ℂℝ𝔼𝔸𝔻𝕆ℝ『🇧🇷』
 
