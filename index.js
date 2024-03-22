@@ -6,8 +6,8 @@
 * Email: arquimarsx@gmail.com
 */
 
-const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
-//const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
+const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, downloadContentFromMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
+// const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
 const usePairingCode = process.argv.includes("--use-pairing-code")
@@ -28,7 +28,7 @@ const addStickerMetaData = require("./src/lib/addStickerMetaData.js")
 const { translate } = require('@vitalets/google-translate-api')
 //const sightengine = require('sightengine')('1322141040', '9EWBYkeg9N8NiQNVAVa9FSpHysV5twTg')
 // const mongoURL = "mongodb+srv://arquimar:x6WrcziOKdwYEckM@bot.450btox.mongodb.net/?retryWrites=true&w=majority";
-//const { MongoClient } = require("mongodb");
+// const { MongoClient } = require("mongodb");
 const { TelegraPh, UploadFileUgu } = require("./src/lib/uploader.js")
 const { 
 prefix,
@@ -328,6 +328,7 @@ isUrl
 const logger = P({
 level: 50
 })
+/*
 const store = makeInMemoryStore({
 logger: P().child({
 level: 'silent',
@@ -336,6 +337,7 @@ stream: 'store'
 })
 store.readFromFile('./data/store.json')
 setInterval(() => {store.writeToFile('./data/store.json')}, 10000)
+*/
 const retryCache = new NodeCache({ stdTTL: 30, checkperiod: 20 })
 const sendCache  = new NodeCache({ stdTTL: 30, checkperiod: 20 })
 const rl = readline.createInterface({
@@ -404,11 +406,10 @@ markOnlineOnConnect: true,
 generateHighQualityLinkPreview: true,
 msgRetryCounterCache: retryCache,
 getMessage: async key => {
-const msg = await store.loadMessage(key.remoteJid, key.id)
+const msg = await sendCache.get(`${key.remoteJid}_${key.id}`)
 return msg?.message || undefined
 }
 })
-
 
 /*
 // makeInMemoryStore //
@@ -424,7 +425,7 @@ return msg?.message || undefined
 }
 */
 
-store.bind(bot.ev);
+//store.bind(bot.ev);
 
 bot.ev.on('creds.update', saveCreds)
 
@@ -619,7 +620,7 @@ const isImage = type == 'imageMessage'
 const isVideo = type == 'videoMessage'
 const isAudio = type == 'audioMessage'
 const isSticker = type == 'stickerMessage'
-const isViewOnceMessageV2 = type == 'ViewOnceMessageV2'
+const isViewOnce = type === "viewOnceMessage" || type === "viewOnceMessageV2" || type === "viewOnceMessageV2Extension";
 const reply = (text) => {
 bot.sendMessage(from, { text: text }, { quoted: info })
 }
@@ -3012,28 +3013,20 @@ break
 case 'test':
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
-if (!isViewOnceMessageV2) return reply(imagemVideoGifErroMensagem())
+if (!isViewOnce) return reply(imagemVideoGifErroMensagem())
 if (texto) return reply(stickerErroMensagem())
-const viewOnce = await generateWAMessage(sender, {
-forward: {
-key : {
-id : info.id,
-remoteJid : from
-},
-message : info.message.viewOnceMessageV2.message || {}
-}
-}, { logger : P() })
-const buffer = await downloadMediaMessage(viewOnce, "buffer", {}, { reuploadRequest : bot.updateMediaMessage, logger : P() })
+let msg = info.message.viewOnceMessageV2.message
+let type = Object.keys(msg)[0]
+let media = await downloadContentFromMessage(msg[type].caption, type == 'imageMessage' ? 'image' : 'video')
+let buffer = Buffer.from([])
+for await (const chunk of media) {
+buffer = Buffer.concat([buffer, chunk])}
+const filePath = path.join(tempfolder, `${fileName}.jpeg`)
+await writeFile(filePath, buffer)
 console.log(buffer)
 }
 break
 */
-case 'amovc':
-if(isGroup) {
-// bot.sendPresenceUpdate('composing', from)
-await sendText('testando kkkk', { quoted: info })
-}
-break
 case 's': case 'sticker':// sticker grande
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
@@ -3042,7 +3035,7 @@ if (texto) return reply(stickerErroMensagem())
 await actions.sticker()
 }
 break
-case 'ss': // sticker pequeno
+case 'ss':// sticker pequeno
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
