@@ -61,7 +61,7 @@ throw new Error(error)
 }
 })
 } else if (this.isVideo) {
-const sizeInSeconds = 12;
+const sizeInSeconds = 15;
 const seconds = this.baileysMessage.message?.videoMessage?.seconds || 
 this.baileysMessage.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.seconds
 const haveSecondsRule = seconds <= sizeInSeconds;
