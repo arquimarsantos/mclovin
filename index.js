@@ -6,7 +6,7 @@
 * Email: arquimarsx@gmail.com
 */
 
-const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, downloadContentFromMessage, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
+const { default: makeWASocket, makeInMemoryStore, makeCacheableSignalKeyStore, DisconnectReason, useMultiFileAuthState, generateWAMessage, downloadMediaMessage, getContentType, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys')
 // const { useMongoDBAuthState } = require("./src/lib/mongoAuthState");
 const NodeCache = require('node-cache')
 const speed = require('performance-now')
@@ -37,6 +37,8 @@ numerodono,
 tempfolder,
 audiotempfolder,
 createStickerMetaData,
+createStickerMetaData2,
+comprimirSticker2,
 sendEmojiMixSticker,
 frases,
 menuimagem1,
@@ -132,7 +134,8 @@ adminLogsErroMensagem,
 imagemVideoGifErroMensagem,
 menuErroMensagem,
 marcarErroMensagem,
-stickerErroMensagem,
+criandoStickerMensagem, 
+videoLongoErroMensagem,
 toImgErroMensagem,
 toGifErroMensagem,
 stickerImagemErroMensagem,
@@ -257,6 +260,20 @@ enviandoMusicaSCMensagem3,
 scBuscarArgsMensagem,
 scBuscarErroMensagem,
 scBuscarMscsEncontradasMensagem,
+gBuscarArgsMensagem,
+gBuscandoMensagem,
+gBuscarMensagem,
+gImgArgsMensagem,
+gBuscandoImgsMensagem,
+gImgMensagem,
+idadeArgsMensagem,
+enviandoResultadoIdadeMensagem1,
+enviandoResultadoIdadeMensagem2,
+enviandoResultadoIdadeMensagem3,
+idadeErroMensagem,
+resultadoIdadeMensagem1,
+resultadoIdadeMensagem2,
+resultadoIdadeMensagem3,
 stickerBuscarArgsMensagem,
 stickerBuscarErroMensagem,
 stickerBuscarEnviadosMensagem,
@@ -365,6 +382,8 @@ var igstoryactived = false
 var wallpaperactived = false
 var pinterestactived = false
 var scbuscaractived = false
+var gbuscaractived = false
+var gimgactived = false
 var randompfpactived = false
 var randomaestheticactived = false
 var randomwlpactived = false
@@ -620,7 +639,8 @@ const isImage = type == 'imageMessage'
 const isVideo = type == 'videoMessage'
 const isAudio = type == 'audioMessage'
 const isSticker = type == 'stickerMessage'
-const isViewOnce = type === "viewOnceMessage" || type === "viewOnceMessageV2" || type === "viewOnceMessageV2Extension";
+const type2 = getContentType(info.message)
+const isViewOnce = type2 === "viewOnceMessage" || type2 === "viewOnceMessageV2" || type2 === "viewOnceMessageV2Extension";
 const reply = (text) => {
 bot.sendMessage(from, { text: text }, { quoted: info })
 }
@@ -864,7 +884,7 @@ await bot.sendMessage(from, { video: { url: x.result[i] }}, { quoted: info })
 }
 if(postcount == x.result.length) {
 reply(igDownloadPostsBaixadosMensagem())
-instagramdlactived = false
+return instagramdlactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -916,7 +936,7 @@ mentions: [sender]})
 }
 if(storycount == x.result.length) {
 reply(igStoryBaixadosMensagem())
-igstoryactived = false
+return igstoryactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -942,14 +962,14 @@ let apiurl = await fetch(`https://api.lolhuman.xyz/api/wallpaper?apikey=GataDios
 if (wallpaperactived == false) {
 wallpaperactived = true
 var wallpapercount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleepwallpaper(3000)
 wallpapercount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(wallpapercount == buscalimite) {
-wallpaperactived = false
+return wallpaperactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -975,14 +995,14 @@ let apiurl = await fetch(`https://api.ouzen.xyz/searching/pinterest2?query=${enc
 if (pinterestactived == false) {
 pinterestactived = true
 var pinterestcount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleeppinterest(3000)
 pinterestcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(pinterestcount == buscalimite) {
-pinterestactived = false
+return pinterestactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1072,7 +1092,7 @@ caption: `Título: ${x.result[i].title}\nArtista: ${x.result[i].artist}\nViews: 
 }
 if(buscascount == x.result.length) {
 reply(scBuscarMscsEncontradasMensagem())
-scbuscaractived = false
+return scbuscaractived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1080,6 +1100,139 @@ reply(funcEmUsoErroMensagem())
 } catch (e) {
 reply(apiErroMensagem())
 scbuscaractived = false
+}
+}
+break
+/*
+case 'gbuscar':
+if(isGroup) {
+// bot.sendPresenceUpdate('composing', from)
+if (!texto) return reply(gBuscarArgsMensagem(prefix, cmd))
+const emojis = ['⚡', '✅', '✔', '🆗']
+const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
+bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
+reply(gBuscandoMensagem())
+try {
+const sleepgooglesearch = (ms) => {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+let api = await fetch(`https://api.lolhuman.xyz/api/gsearch?apikey=GataDios&query=${encodeURI(texto)}`)
+let x = await api.json()
+if (gbuscaractived == false) {
+gbuscaractived = true
+if (x.status == false) {
+reply(gBuscarErroMensagem())
+return gbuscaractived = false
+}
+var buscascount = 0
+for (let i = 0; i < Math.min(x.result.length); i++) {
+await sleepgooglesearch(3000)
+buscascount++
+try {
+const { translatetitle } = await translate(`${x.result[i].title}`, { to: 'es', autoCorrect: true })
+const { translatedesc } = await translate(`${x.result[i].desc}`, { to: 'es', autoCorrect: true })
+await bot.sendMessage(from, { text: `
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│🔍 𝚃𝚒́𝚝𝚞𝚕𝚘: 
+│ ${translatetitle}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│💬 𝙳𝚎𝚜𝚌𝚛𝚒𝚙𝚌𝚒𝚘́𝚗:
+│ ${translatedesc}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+│🔗 𝙻𝚒𝚗𝚔:
+│ ${x.result[i].link}
+│┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈` }, { quoted: info })
+} catch (e) {
+console.log(e)
+if (gbuscaractived == true) {
+gbuscaractived = false
+}
+return reply(traduzirErroMensagem())
+}
+}
+if(buscascount == x.result.length) {
+reply(gBuscarMensagem())
+return gbuscaractived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
+} catch (e) {
+reply(apiErroMensagem())
+gbuscaractived = false
+console.log(e)
+}
+}
+break
+*/
+case 'google': case 'gimg':
+if(isGroup) {
+// bot.sendPresenceUpdate('composing', from)
+if (!texto) return reply(gImgArgsMensagem(prefix, cmd))
+const emojis = ['🔍', '📷', '✔', '🆗']
+const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
+bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
+reply(gBuscandoImgsMensagem())
+try {
+const sleepgoogleimgsearch = (ms) => {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+let api = await fetch(`https://api.lolhuman.xyz/api/gimage2?apikey=GataDios&query=${encodeURI(texto)}`)
+let x = await api.json()
+if (gimgactived == false) {
+gimgactived = true
+if (x.status == false) {
+reply(gImgErroMensagem())
+return gimgactived = false
+}
+var buscascount = 0
+const buscalimite = 20;
+for (let i = 0; i < Math.min(buscalimite, x.result.length); i++) {
+await sleepgoogleimgsearch(3000)
+buscascount++
+await bot.sendMessage(from, { image: { url: x.result[i] }}, { quoted: info })
+}
+if(buscascount == buscalimite) {
+reply(gImgMensagem())
+return gimgactived = false
+}
+} else {
+reply(funcEmUsoErroMensagem())
+}
+} catch (e) {
+reply(apiErroMensagem())
+gimgactived = false
+console.log(e)
+}
+}
+break
+case 'edad': case 'detectaredad':
+if(isGroup) {
+// bot.sendPresenceUpdate('composing', from)
+if (!isQuotedImage) return reply(imagemErroMensagem())
+if (texto) return reply(idadeArgsMensagem(prefix, cmd))
+const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
+const image = await UploadFileUgu(img)
+const emojis = ['🆗', '⚡', '😇', '🆙', '✔', '✅']
+const randomemoji = emojis[Math.floor(Math.random() * emojis.length)]
+bot.sendMessage(from, { react: { text: randomemoji, key: info.key }})
+const msgs = [enviandoResultadoIdadeMensagem1(), enviandoResultadoIdadeMensagem2(), enviandoResultadoIdadeMensagem3()]
+const randomidademsg = msgs[Math.floor(Math.random() * msgs.length)]
+reply(randomidademsg)
+try {
+const api = await fetch(`https://api.lolhuman.xyz/api/agedetect?apikey=GataDios&img=${encodeURIComponent(util.format(image.url))}`)
+let x = await api.json()
+if (x.status == 500) {
+return reply(idadeErroMensagem())
+}
+const msgsresultado = [resultadoIdadeMensagem1(x.result), resultadoIdadeMensagem2(x.result), resultadoIdadeMensagem3(x.result)]
+const randomresultadomsg = msgsresultado[Math.floor(Math.random() * msgsresultado.length)]
+await bot.sendMessage(from, { text: randomresultadomsg }, {quoted: info})
+fs.unlinkSync(img)
+} catch (e) {
+fs.unlinkSync(img)
+reply(apiErroMensagem())
+console.log(e)
 }
 }
 break
@@ -1246,14 +1399,14 @@ let apiurl = await fetch(`https://api.ouzen.xyz/randomimage/profil?apikey=zenzke
 if (randompfpactived == false) {
 randompfpactived = true
 var randompfpcount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleeprprofile(3000)
 randompfpcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(randompfpcount == buscalimite) {
-randompfpactived = false
+return randompfpactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1276,14 +1429,14 @@ let apiurl = await fetch(`https://api.ouzen.xyz/randomimage/aesthetic?apikey=zen
 if (randomaestheticactived == false) {
 randomaestheticactived = true
 var randomaestheticcount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleepaesthetic(3000)
 randomaestheticcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(randomaestheticcount == buscalimite) {
-randomaestheticactived = false
+return randomaestheticactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1306,14 +1459,14 @@ let apiurl = await fetch('https://api.lolhuman.xyz/api/random2/wallpaper?apikey=
 if (randomwlpactived == false) {
 randomwlpactived = true
 var randomwlpcount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleeprandomwlp(3000)
 randomwlpcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(randomwlpcount == buscalimite) {
-randomwlpactived = false
+return randomwlpactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1336,14 +1489,14 @@ let apiurl = await fetch('https://api.lolhuman.xyz/api/random/art?apikey=GataDio
 if (randomfanartactived == false) {
 randomfanartactived = true
 var randomfanartcount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleepfanart(3000)
 randomfanartcount++
 await bot.sendMessage(from, { image: apiurl }, { quoted: info })
 }
 if(randomfanartcount == buscalimite) {
-randomfanartactived = false
+return randomfanartactived = false
 }
 } else {
 reply(funcEmUsoErroMensagem())
@@ -1367,7 +1520,7 @@ let apiurl = await fetch('https://api.ouzen.xyz/randomanime/anime?apikey=zenzkey
 if (randomanimeactived == false) {
 randomanimeactived = true
 var randomanimecount = 0
-const buscalimite = 5;
+const buscalimite = 8;
 for (let i = 0; i < Math.min(buscalimite); i++) {
 await sleepanime(3000)
 randomanimecount++
@@ -1779,7 +1932,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/buoys?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/buoys?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -1975,7 +2129,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/heated?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/heated?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2131,7 +2286,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/pencil?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/pencil?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2187,7 +2343,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/quotestatus?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/quotestatus?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2315,7 +2472,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/wood?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/wood?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2329,7 +2487,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/ephoto/writestatus?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/ephoto/writestatus?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2596,7 +2755,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/textpro/glitch?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/textpro/glitch?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2694,7 +2854,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/textpro/marvel?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/textpro/marvel?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2764,7 +2925,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/textpro/pornhub?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/textpro/pornhub?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2834,7 +2996,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/textpro/logowolf2?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/textpro/logowolf2?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2848,7 +3011,8 @@ if (!args[0] || !args[1]) return reply(comandos2ImgEditorErroMensagem(prefix, cm
 try {
 const randomemojismsg = rsuperemojis[Math.floor(Math.random() * rsuperemojis.length)]
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-const res = await fetch(`https://api.ouzen.xyz/textpro/logowolf?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(args[1])}&apikey=zenzkey_91737a4ecd09`)
+var txtargs = args.slice(1).join(' ')
+const res = await fetch(`https://api.ouzen.xyz/textpro/logowolf?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txtargs)}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
 reply(apiErroMensagem())
@@ -2982,7 +3146,7 @@ try {
 const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const image = await UploadFileUgu(img)
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-txt = args.slice(1).join(' ')
+var txt = args.slice(1).join(' ')
 const res = await fetch(`https://api.ouzen.xyz/creator/smeme?text=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txt)}&url=${encodeURIComponent(util.format(image.url))}&apikey=zenzkey_91737a4ecd09`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
@@ -3001,7 +3165,7 @@ try {
 const img = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const image = await UploadFileUgu(img)
 bot.sendMessage(from, { react: { text: randomemojismsg, key: info.key }})
-txt = args.slice(1).join(' ')
+var txt = args.slice(1).join(' ')
 const res = await fetch(`https://api.lolhuman.xyz/api/memecreator?apikey=GataDios&text1=${encodeURIComponent(args[0])}&text2=${encodeURIComponent(txt)}&img=${encodeURIComponent(util.format(image.url))}`)
 await bot.sendMessage(from, { image: res}, {quoted: info})
 } catch (e) {
@@ -3013,17 +3177,21 @@ break
 case 'test':
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
-if (!isViewOnce) return reply(imagemVideoGifErroMensagem())
-if (texto) return reply(stickerErroMensagem())
-let msg = info.message.viewOnceMessageV2.message
-let type = Object.keys(msg)[0]
-let media = await downloadContentFromMessage(msg[type].caption, type == 'imageMessage' ? 'image' : 'video')
-let buffer = Buffer.from([])
-for await (const chunk of media) {
-buffer = Buffer.concat([buffer, chunk])}
-const filePath = path.join(tempfolder, `${fileName}.jpeg`)
+if (isViewOnce) {
+const viewOnce = await generateWAMessage(from, {
+forward: {
+key : {
+id : info.key.id,
+remoteJid : from
+},
+message : info.message.viewOnceMessageV2.message || {}
+}
+}, { logger : P() })
+const buffer = await downloadMediaMessage(viewOnce, "buffer", {}, { reuploadRequest : bot.updateMediaMessage, logger : P() })
+const filePath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.jpeg`)
 await writeFile(filePath, buffer)
-console.log(buffer)
+console.log(viewOnce)
+}
 }
 break
 */
@@ -3031,18 +3199,86 @@ case 's': case 'sticker':// sticker grande
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
-if (texto) return reply(stickerErroMensagem())
-await actions.sticker()
+if (!texto) return await actions.sticker()
+if (args[0] || args[1]) { // renomear
+if (isQuotedImage) {
+const inputPath = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
+ffmpeg(inputPath).outputOptions(["-y", "-vcodec libwebp", "-lossless 1", "-qscale 1", "-loop 0", "-an", "-vsync 0", "-s 512x512"]).toFormat("webp").save(outputPath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData2(args[0], txtargs))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+})
+} else if (isQuotedVideo) {
+const sizeInSeconds = 15;
+const seconds = info.message?.videoMessage?.seconds || 
+info.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.seconds
+const haveSecondsRule = seconds <= sizeInSeconds;
+if (!haveSecondsRule) return reply(videoLongoErroMensagem(sizeInSeconds))
+reply(criandoStickerMensagem())
+const inputPath = await downloadVideo(info, `${Math.floor(Math.random() * 10000)}`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
+ffmpeg(inputPath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(outputPath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+let resultSticker = await fs.promises.readFile(outputPath)
+// se o sticker pesa mais que 1MB
+if (resultSticker.length > 1000000) {
+fs.unlinkSync(outputPath)
+// comprimir
+return await comprimirSticker2(bot, from, args[0], txtargs, inputPath, outputPath, info)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData2(args[0], txtargs))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+})
+}
+}
 }
 break
 case 'ss':// sticker pequeno
 if(isGroup) {
 // bot.sendPresenceUpdate('composing', from)
 if (!isQuotedImage && !isQuotedVideo) return reply(imagemVideoGifErroMensagem())
-if (texto) return reply(stickerErroMensagem())
+if (!texto) {
 if (isQuotedImage) {
 const inputPath = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
 const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
 ffmpeg(inputPath).outputOptions(["-y", "-vcodec libwebp", "-lossless 1", "-qscale 1", "-loop 0", "-an", "-vsync 0"]).videoFilters("scale='min(512,iw)':min'(512,ih)':force_original_aspect_ratio=decrease, pad=512:512:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"
 ).toFormat("webp").save(outputPath)
 .on("end", async (error) => {
@@ -3067,7 +3303,113 @@ throw new Error(error)
 }
 })
 } else if (isQuotedVideo) {
-await actions.sticker()
+const sizeInSeconds = 15;
+const seconds = info.message?.videoMessage?.seconds || 
+info.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.seconds
+const haveSecondsRule = seconds <= sizeInSeconds;
+if (!haveSecondsRule) return reply(videoLongoErroMensagem(sizeInSeconds))
+reply(criandoStickerMensagem())
+const inputPath = await downloadVideo(info, `${Math.floor(Math.random() * 10000)}`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
+ffmpeg(inputPath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(outputPath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+let resultSticker = await fs.promises.readFile(outputPath)
+// se o sticker pesa mais que 1MB
+if (resultSticker.length > 1000000) {
+fs.unlinkSync(outputPath)
+// comprimir
+return await comprimirSticker(bot, from, pushname, inputPath, outputPath, info)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData(pushname))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+})
+}
+} else if (args[0] || args[1]) { // renomear
+if (isQuotedImage) {
+const inputPath = await downloadImage(info, `${Math.floor(Math.random() * 10000)}`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
+ffmpeg(inputPath).outputOptions(["-y", "-vcodec libwebp", "-lossless 1", "-qscale 1", "-loop 0", "-an", "-vsync 0"]).videoFilters("scale='min(512,iw)':min'(512,ih)':force_original_aspect_ratio=decrease, pad=512:512:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"
+).toFormat("webp").save(outputPath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData2(args[0], txtargs))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+})
+} else if (isQuotedVideo) {
+const sizeInSeconds = 15;
+const seconds = info.message?.videoMessage?.seconds || 
+info.message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.seconds
+const haveSecondsRule = seconds <= sizeInSeconds;
+if (!haveSecondsRule) return reply(videoLongoErroMensagem(sizeInSeconds))
+reply(criandoStickerMensagem())
+const inputPath = await downloadVideo(info, `${Math.floor(Math.random() * 10000)}`)
+const outputPath = path.join(tempfolder, `${Math.floor(Math.random() * 10000)}.webp`)
+txtargs = args.slice(1).join(' ')
+ffmpeg(inputPath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(outputPath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+let resultSticker = await fs.promises.readFile(outputPath)
+// se o sticker pesa mais que 1MB
+if (resultSticker.length > 1000000) {
+fs.unlinkSync(outputPath)
+// comprimir
+return await comprimirSticker2(bot, from, args[0], txtargs, inputPath, outputPath, info)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(outputPath, createStickerMetaData2(args[0], txtargs))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(inputPath)
+fs.unlinkSync(outputPath)
+throw new Error(error)
+}
+})
+}
 }
 }
 break
@@ -3418,8 +3760,8 @@ if (args[0] != 'af' && args[0] != 'sq' && args[0] != 'am' && args[0] != 'ar' && 
 if (!args[1]) return reply(traduzirArgsMensagem(prefix, cmd))
 txt = args.slice(1).join(' ')
 try {
-let result = await translate(`${txt}`, { to: args[0], autoCorrect: true })
-await bot.sendMessage(from, { text: result.txt}, {quoted: info})
+const { result } = await translate(`${txt}`, { to: args[0], autoCorrect: true })
+await bot.sendMessage(from, { text: result}, {quoted: info})
 } catch {
 try {
 let lol = await fetch(`https://api.lolhuman.xyz/api/translate/auto/${encodeURIComponent(args[0])}?apikey=GataDios&text=${encodeURIComponent(txt)}`)
