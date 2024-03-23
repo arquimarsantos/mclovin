@@ -34,6 +34,13 @@ author: `彡 👤 ${pushName}`
 };
 }
 
+function createStickerMetaData2(packname, author) {
+return {
+packname: packname,
+author: author
+};
+}
+
 function menuMensagem()
 {
 return `
@@ -50,11 +57,13 @@ return `
 ┝ _➛${prefix}instagram || ${prefix}ig *<texto>*
 ┝ _➛${prefix}instadl || ${prefix}igdl *<link>*
 ┝ _➛${prefix}igstory *<texto>*
+┝ _➛${prefix}google || ${prefix}gimg *<texto>*
 ┝ _➛${prefix}tiktokdl || ${prefix}ttkdl *<link>*
 ┝ _➛${prefix}wallpaper || ${prefix}w *<texto>*
 ┝ _➛${prefix}pinterest || ${prefix}p *<texto>*
 ┝ _➛${prefix}meme || ${prefix}mememaker *<texto>*
 ┝ _➛${prefix}meme2 || ${prefix}mememaker2 *<texto>*
+┝ _➛${prefix}edad || ${prefix}detectaredad
 ┝ _➛${prefix}pinterestdl *<link>*
 ┝ _➛${prefix}soundcloud || ${prefix}sc *<link>*
 ┝ _➛${prefix}soundcloudbuscar || ${prefix}scbuscar *<texto>*
@@ -462,7 +471,7 @@ return `[❗] Usa ${prefix}bienvenido2 1 || 0`
 
 function imagemVideoGifErroMensagem()
 {
-return `[❗] Etiqueta la imagen/vídeo/gif y usa el comando para hacer el sticker!\n \n➳ ${prefix}sticker || ${prefix}s (sticker grande)\n➳ ${prefix}ss (sticker medio, no cambia en el vídeo!!)`
+return `[❗] Etiqueta la imagen/vídeo/gif y usa el comando para hacer el sticker!\n \n➳ ${prefix}sticker || ${prefix}s (sticker grande)\n➳ ${prefix}ss (sticker medio, no cambia en el vídeo!!)\n \n࿓ Si el sticker de vídeo está parado reduzca el tiempo del video para evitar que se congele.`
 }
 
 function videoLongoErroMensagem(segundos)
@@ -812,7 +821,7 @@ return '[❗] Ocurrió un error, talvez el texto ingresado no es compatible con 
 
 function selecionarIdiomaErroMensagem()
 {
-return '[❗] Elija un idioma...\n \nIdiomas disponibles :\n□ ar - arabe\n□ de - alemán\n□ en - inglés\n□ es - español\n□ fr - francés\n□ id - indonesio\n□ it - italiano\n□ ja - japonés\n□ ko - coreano\n□ pt - portugués\n□ ru - ruso\n□ sv - sueco'
+return `[❗] Elija un idioma...\n \nIdiomas disponibles :\n□ ar - arabe\n□ de - alemán\n□ en - inglés\n□ es - español\n□ fr - francés\n□ id - indonesio\n□ it - italiano\n□ ja - japonés\n□ ko - coreano\n□ pt - portugués\n□ ru - ruso\n□ sv - sueco\n \n࿓ Despues ingrese el comando, ejemplo: ${prefix}voz es hola como estas?`
 }
 
 function selecionarIdiomaTradutorErroMensagem()
@@ -1672,6 +1681,76 @@ function scBuscarMscsEncontradasMensagem()
 return 'Todas las buscas fueron enviadas! ☑'
 }
 
+function gBuscarArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese la busca, ejemplo: ${prefix}${cmd} <texto>`
+}
+
+function gBuscandoMensagem()
+{
+return 'Haciendo la busca... 💬'
+}
+
+function gBuscarMensagem()
+{
+return 'ϟ Todas las buscas fueron enviadas! ✔'
+}
+
+function gImgArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese el nombre de la imagen para buscar\n \n࿓ Ejemplo: ${prefix}${cmd} <texto>`
+}
+
+function gBuscandoImgsMensagem()
+{
+return 'Buscando imágenes... ⌛'
+}
+
+function gImgMensagem()
+{
+return 'Todas las imágenes fueron enviadas! ✔'
+}
+
+function idadeArgsMensagem(prefix, cmd)
+{
+return `[❗] Ingrese ${prefix}${cmd} sin argumentos!`
+}
+
+function enviandoResultadoIdadeMensagem1()
+{
+return 'Analizando la imagen... ⌛'
+}
+
+function enviandoResultadoIdadeMensagem2()
+{
+return 'Analizando... 💭'
+}
+
+function enviandoResultadoIdadeMensagem3()
+{
+return 'Haciendo la análisis, espera! 🙏🏼'
+}
+
+function idadeErroMensagem()
+{
+return '[❗] Ocurrió un error al analizar la imagen, talvez no sea una persona or la foto no sea válida.'
+}
+
+function resultadoIdadeMensagem1(idade)
+{
+return `ϟ Análisis completada, esta persona parece tener *${idade}* años de edad! ✔`
+}
+
+function resultadoIdadeMensagem2(idade)
+{
+return `Aparentemente esta persona parece tener *${idade}* años de edad... ⚡`
+}
+
+function resultadoIdadeMensagem3(idade)
+{
+return `Esta persona tiene aproximadamente *${idade}* años de edad! 😇`
+}
+
 function stickerBuscarArgsMensagem(prefix, cmd)
 {
 return `[❗] Ingrese un nombre para buscar\n \nEjemplo: ${prefix}${cmd} gatos\n \n࿓ Si quiere saber los nombres con más facilidad descarga la aplicación *Sticker.ly*`
@@ -2433,6 +2512,31 @@ throw new Error(error)
 })
 }
 
+async function comprimirSticker2(bot, from, args0, args1, ipath, opath, info) {
+ff(ipath).addOutputOptions([`-y`, `-vcodec`, `libwebp`, `-vf`, `scale='min(224,iw)':min'(224,ih)':force_original_aspect_ratio=decrease,fps=15, pad=224:224:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`]).toFormat("webp").save(opath)
+.on("end", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(ipath)
+fs.unlinkSync(opath)
+throw new Error(error)
+}
+const mediaWithMetaDataPath = await addStickerMetaData(opath, createStickerMetaData2(args0, args1))
+const media = fs.readFileSync(mediaWithMetaDataPath)
+await bot.sendMessage(from, { sticker: media }, { quoted: info })
+fs.unlinkSync(mediaWithMetaDataPath)
+fs.unlinkSync(ipath)
+fs.unlinkSync(opath)
+}).on("error", async (error) => {
+if (error) {
+console.log(error)
+fs.unlinkSync(ipath)
+fs.unlinkSync(opath)
+throw new Error(error)
+}
+})
+}
+
 const textoParaVoz = async (idioma, texto) => {
 return new Promise((resolve,reject)=>{
 const ttsAr = require('node-gtts')('ar')
@@ -2654,7 +2758,9 @@ nomebot,
 numerodono,
 tempfolder,
 createStickerMetaData,
+createStickerMetaData2,
 comprimirSticker,
+comprimirSticker2,
 audiotempfolder,
 frases,
 menuimagem1,
@@ -2892,6 +2998,20 @@ enviandoMusicaSCMensagem3,
 scBuscarArgsMensagem,
 scBuscarErroMensagem,
 scBuscarMscsEncontradasMensagem,
+gBuscarArgsMensagem,
+gBuscandoMensagem,
+gBuscarMensagem,
+gImgArgsMensagem,
+gBuscandoImgsMensagem,
+gImgMensagem,
+idadeArgsMensagem,
+enviandoResultadoIdadeMensagem1,
+enviandoResultadoIdadeMensagem2,
+enviandoResultadoIdadeMensagem3,
+idadeErroMensagem,
+resultadoIdadeMensagem1,
+resultadoIdadeMensagem2,
+resultadoIdadeMensagem3,
 stickerBuscarArgsMensagem,
 stickerBuscarErroMensagem,
 stickerBuscarEnviadosMensagem,
